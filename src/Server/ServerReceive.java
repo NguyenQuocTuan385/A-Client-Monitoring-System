@@ -34,10 +34,7 @@ public class ServerReceive implements Runnable{
                     String info = lineTemp[2];
                     String path = lineTemp[3];
 
-                    if (info.equals("1")) {
-                        new ServerSend(listClient, message, info, nameClient);
-                    }
-                    else if (info.equals("2")) {
+                     if (info.equals("2")) {
                         if (!listNameClient.contains(nameClient)) {
                             System.out.println("name:" + nameClient + " path:" + path);
                             listNameClient.add(nameClient);
