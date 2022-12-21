@@ -25,6 +25,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
     private DefaultTableModel dtmListActionClient;
     private JTable jTableListActionClient;
     private  JButton jButtonStart;
+    private JFileChooser chooser;
 
     public Server() {
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -103,6 +104,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
         JPanel jPanelBodyLeft = new JPanel(new BorderLayout());
         jPanelBodyLeft.add(jPanelHeaderLeft, BorderLayout.PAGE_START);
         jPanelBodyLeft.add(jPanelBody, BorderLayout.CENTER);
+        jPanelBodyLeft.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
         JPanel jPanelHeaderRight = new JPanel();
         jPanelHeaderRight.setPreferredSize(new Dimension(600, 60));
@@ -153,14 +155,20 @@ public class Server extends JFrame implements Runnable, ActionListener {
         jTableListClient.getColumnModel().getColumn(2).setPreferredWidth(250);
 
         JScrollPane sc1 = new JScrollPane(jTableListClient, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+        JButton jButtonSelectFolder = new JButton("Chọn thư mục");
+        jButtonSelectFolder.addActionListener(this);
+
         JPanel jPanelBody1= new JPanel(new BorderLayout());
         jPanelBody1.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
-        jPanelBody1.add(sc1);
+        jPanelBody1.add(sc1, BorderLayout.CENTER);
+        jPanelBody1.add(jButtonSelectFolder, BorderLayout.PAGE_END);
         jPanelBody1.setPreferredSize(new Dimension(400,500));
+
 
         JPanel jPanelBodyRight = new JPanel(new BorderLayout());
         jPanelBodyRight.add(jPanelHeaderRight, BorderLayout.PAGE_START);
         jPanelBodyRight.add(jPanelBody1, BorderLayout.CENTER);
+        jPanelBodyRight.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
         this.setLayout(new BorderLayout());
         this.add(jPanelBodyLeft, BorderLayout.LINE_START);
@@ -196,12 +204,42 @@ public class Server extends JFrame implements Runnable, ActionListener {
     public void actionPerformed(ActionEvent e) {
         String strAction = e.getActionCommand();
         if (strAction.equals("Start")) {
-            if (portServer.equals("")) {
+            if (portServer.getText().equals("")) {
                 JOptionPane.showMessageDialog(null, "Bạn chưa nhập port!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
             else {
                 this.port = Integer.parseInt(portServer.getText());
                 new Thread(this).start();
+            }
+        }
+        else if (strAction.equals("Chọn thư mục")) {
+            if (!jTableListClient.getSelectionModel().isSelectionEmpty()) {
+
+                DefaultTableModel model = (DefaultTableModel) jTableListClient.getModel();
+
+                int selectedRowIndex = jTableListClient.getSelectedRow();
+                String username = model.getValueAt(selectedRowIndex, 1).toString();
+                String path = model.getValueAt(selectedRowIndex, 2).toString();
+
+                chooser = new JFileChooser();
+                chooser.setCurrentDirectory(new java.io.File(path));
+                chooser.setDialogTitle("Chọn thư mục giám sát");
+                chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                chooser.setAcceptAllFileFilterUsed(false);
+                //
+                if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    dtmListClient.setValueAt(chooser.getSelectedFile(), selectedRowIndex, 2);
+                    Socket socket = mapClient.get(username);
+                    try {
+                        new ServerSend(socket,"Change Folder Monitoring", "5", "server");
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn client để đổi thư mục giám sát"
+                        , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         }
     }

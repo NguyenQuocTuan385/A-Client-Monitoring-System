@@ -1,27 +1,60 @@
 package Client;
 
-import java.io.File;
-import java.util.Scanner;
+import javax.swing.*;
+import java.awt.event.*;
+import java.awt.*;
 
-public class Main {
-    public static void main(String[] args) {
-//        new ClientHandler();
-        // create a file object
-        String folderPath = "C:\\Drivers";
 
-        File folder = new File(folderPath);
+public class Main extends JPanel
+        implements ActionListener {
+    JButton go;
 
-        File[] files = folder.listFiles();
+    JFileChooser chooser;
+    String choosertitle;
 
-        //iterate the files array
-        for(File file:files) {
-            //check if the file
-            if(file.isFile()) {
-                System.out.println("File - "+file.getName());
-            }else
-            if(file.isDirectory()) {
-                System.out.println("Folder - "+file.getName());
-            }
+    public Main() {
+        go = new JButton("Do it");
+        go.addActionListener(this);
+        add(go);
+    }
+
+    public void actionPerformed(ActionEvent e) {
+        chooser = new JFileChooser();
+        chooser.setCurrentDirectory(new java.io.File("C:"));
+        chooser.setDialogTitle(choosertitle);
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        //
+        // disable the "All files" option.
+        //
+        chooser.setAcceptAllFileFilterUsed(false);
+        //
+        if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+            System.out.println("getCurrentDirectory(): "
+                    +  chooser.getCurrentDirectory());
+            System.out.println("getSelectedFile() : "
+                    +  chooser.getSelectedFile());
         }
+        else {
+            System.out.println("No Selection ");
+        }
+    }
+
+    public Dimension getPreferredSize(){
+        return new Dimension(200, 200);
+    }
+
+    public static void main(String s[]) {
+        JFrame frame = new JFrame("");
+        Main panel = new Main();
+        frame.addWindowListener(
+                new WindowAdapter() {
+                    public void windowClosing(WindowEvent e) {
+                        System.exit(0);
+                    }
+                }
+        );
+        frame.getContentPane().add(panel,"Center");
+        frame.setSize(panel.getPreferredSize());
+        frame.setVisible(true);
     }
 }
