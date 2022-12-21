@@ -126,7 +126,11 @@ public class ClientHandler extends JFrame implements ActionListener {
             }
         }
         else if (strAction.equals("Đóng kết nối")) {
-
+            try {
+                new ClientSend(socket, "Disconnect", "3",clientUsername, dirCurrent);
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(null, "Đóng kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
+            }
         }
     }
 

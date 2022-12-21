@@ -34,6 +34,13 @@ public class ClientReceive implements Runnable{
                     JOptionPane.showMessageDialog(null, "Kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     jButtonConnect.setText("Đóng kết nối");
                 }
+                else if(info.equals("3")) {
+                    JOptionPane.showMessageDialog(null, "Đóng kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    socket.close();
+                    bufferedReader.close();
+                    jButtonConnect.setText("Kết nối");
+                    break;
+                }
                 else if (info.equals("4")) {
                     System.out.println("Đã có người sử dụng tên này!");
                     socket.close();

@@ -1,9 +1,12 @@
 package Server;
 
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.TreeMap;
+import java.util.Vector;
 
 public class ServerReceive implements Runnable{
     private Socket socket;
@@ -11,9 +14,11 @@ public class ServerReceive implements Runnable{
     private ArrayList<String> listNameClient;
     private TreeMap<String , Socket> mapNameClient;
     private TreeMap<String, String> mapPathClient;
+    private DefaultTableModel dtmListClient;
 
     public ServerReceive(Socket s, ArrayList<Socket> listClient, ArrayList<String> listNameClient,
-                         TreeMap<String, Socket> map) {
+                         TreeMap<String, Socket> map, DefaultTableModel dtmListClient) {
+        this.dtmListClient = dtmListClient;
         this.socket = s;
         this.listClient = listClient;
         this.listNameClient = listNameClient;
@@ -36,16 +41,32 @@ public class ServerReceive implements Runnable{
 
                      if (info.equals("2")) {
                         if (!listNameClient.contains(nameClient)) {
-                            System.out.println("name:" + nameClient + " path:" + path);
                             listNameClient.add(nameClient);
                             mapNameClient.put(nameClient, socket);
                             mapPathClient.put(nameClient, path);
+                            int index = listNameClient.size();
+                            Vector<String>vec = new Vector<>();
+                            vec.add(String.valueOf(index));
+                            vec.add(nameClient);
+                            vec.add(path);
+                            dtmListClient.addRow(vec);
                             new ServerSend(listClient, message, "2", nameClient);
                         } else {
                             listClient.remove(socket);
                             new ServerSend(socket, "", "4", "server");
                         }
                     }
+                     else if (info.equals("3")) {
+                         if (listNameClient.contains(nameClient)) {
+                             dtmListClient.removeRow(listNameClient.indexOf(nameClient));
+                             listNameClient.remove(nameClient);
+                             mapNameClient.remove(nameClient);
+                             mapPathClient.remove(nameClient);
+                             listClient.remove(socket);
+                             new ServerSend(socket, "Disconnect", "3", "server");
+                             System.out.println(nameClient + "is disconnected");
+                         }
+                     }
                 }
 
             }
