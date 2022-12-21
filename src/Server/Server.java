@@ -19,16 +19,6 @@ public class Server implements Runnable {
         this.port = port;
     }
 
-    public void closeServerSocket() {
-        try {
-            if (serverSocket != null) {
-                serverSocket.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
     public static void main(String[] args) throws IOException {
         Server server = new Server(1234);
         new Thread(server).start();
@@ -43,7 +33,6 @@ public class Server implements Runnable {
         System.out.println("Bắt đầu khởi động máy chủ");
         try {
             serverSocket = new ServerSocket(port);
-            System.out.println(serverSocket.getLocalSocketAddress());
         } catch (IOException e) {
             e.printStackTrace();
         }

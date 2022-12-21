@@ -8,6 +8,7 @@ public class ClientHandler  {
     private Socket socket;
     private BufferedWriter bufferedWriter;
     private String clientUsername;
+    private String dirCurrent;
 
     public ClientHandler(String ip, int port, String clientUsername) {
         try {
@@ -16,10 +17,9 @@ public class ClientHandler  {
 
             this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
 
-            String message = clientUsername;
-            bufferedWriter.write(message);
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
+            dirCurrent = new File(".").getCanonicalPath();
+
+            new ClientSend(socket, "Connected", "2",clientUsername, dirCurrent);
             new Thread(new ClientReceive(socket)).start();
         } catch (IOException e) {
             e.printStackTrace();
