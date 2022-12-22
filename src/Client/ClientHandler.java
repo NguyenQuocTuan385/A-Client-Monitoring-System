@@ -52,6 +52,8 @@ public class ClientHandler extends JFrame implements ActionListener {
         jButtonConnect.setFont(fontBody);
         jButtonConnect.setPreferredSize(new Dimension(150,40));
         jButtonConnect.addActionListener(this);
+        jButtonConnect.setBackground(new Color(1, 119, 216));
+        jButtonConnect.setForeground(Color.white);
 
         JPanel jPanelPath = new JPanel(new FlowLayout());
         JLabel jLabelPath = new JLabel("Path");
@@ -114,7 +116,7 @@ public class ClientHandler extends JFrame implements ActionListener {
             public void windowClosing(java.awt.event.WindowEvent windowEvent) {
                 if (jButtonConnect.getText().equals("Đóng kết nối")) {
                     try {
-                        new ClientSend(socket, "Disconnect", "3",clientUsername, dirCurrent);
+                        new ClientSend(socket, "Disconnect",clientUsername, dirCurrent);
                         socket.close();
                     } catch (IOException ex) {
                         JOptionPane.showMessageDialog(null, "Đóng kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
@@ -142,7 +144,7 @@ public class ClientHandler extends JFrame implements ActionListener {
                     this.socket = new Socket("127.0.0.1", port);
                     dirCurrent = "C:";
                     jTextPath.setText(dirCurrent);
-                    new ClientSend(socket, "Connected", "2",clientUsername, dirCurrent);
+                    new ClientSend(socket, "Connect",clientUsername, dirCurrent);
                     new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath)).start();
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
@@ -151,7 +153,7 @@ public class ClientHandler extends JFrame implements ActionListener {
         }
         else if (strAction.equals("Đóng kết nối")) {
             try {
-                new ClientSend(socket, "Disconnect", "3",clientUsername, dirCurrent);
+                new ClientSend(socket, "Disconnect",clientUsername, dirCurrent);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Đóng kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
             }

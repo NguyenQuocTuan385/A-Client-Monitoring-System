@@ -15,32 +15,33 @@ public class ServerReceive implements Runnable{
     private TreeMap<String , Socket> mapNameClient;
     private TreeMap<String, String> mapPathClient;
     private DefaultTableModel dtmListClient;
+    private boolean isStart;
 
     public ServerReceive(Socket s, ArrayList<Socket> listClient, ArrayList<String> listNameClient,
-                         TreeMap<String, Socket> map, DefaultTableModel dtmListClient, TreeMap<String, String> mapPathClient) {
+                         TreeMap<String, Socket> map, DefaultTableModel dtmListClient, TreeMap<String, String> mapPathClient,
+                         boolean isStart) {
         this.mapPathClient = mapPathClient;
         this.dtmListClient = dtmListClient;
         this.socket = s;
         this.listClient = listClient;
         this.listNameClient = listNameClient;
         this.mapNameClient = map;
-        mapPathClient = new TreeMap<>();
+        this.isStart = isStart;
     }
 
     @Override
     public void run() {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            while (true) {
+            while (isStart) {
                 String line = bufferedReader.readLine();
                 if (line != null) {
                     String lineTemp[] = line.split("`");
                     String nameClient = lineTemp[0];
-                    String message = lineTemp[1];
-                    String info = lineTemp[2];
-                    String path = lineTemp[3];
+                    String infoMessage = lineTemp[1];
+                    String path = lineTemp[2];
 
-                     if (info.equals("2")) {
+                     if (infoMessage.equals("Connect")) {
                         if (!listNameClient.contains(nameClient)) {
                             listNameClient.add(nameClient);
                             mapNameClient.put(nameClient, socket);
@@ -51,20 +52,20 @@ public class ServerReceive implements Runnable{
                             vec.add(nameClient);
                             vec.add(path);
                             dtmListClient.addRow(vec);
-                            new ServerSend(socket, message, "2", nameClient);
+                            new ServerSend(socket, "Connect success", "server");
                         } else {
                             listClient.remove(socket);
-                            new ServerSend(socket, "", "4", "server");
+                            new ServerSend(socket, "Connect fail", "server");
                         }
                     }
-                     else if (info.equals("3")) {
+                     else if (infoMessage.equals("Disconnect")) {
                          if (listNameClient.contains(nameClient)) {
                              dtmListClient.removeRow(listNameClient.indexOf(nameClient));
                              listNameClient.remove(nameClient);
                              mapNameClient.remove(nameClient);
                              mapPathClient.remove(nameClient);
                              listClient.remove(socket);
-                             new ServerSend(socket, "Disconnect", "3", "server");
+                             new ServerSend(socket, "Disconnect success", "server");
                              System.out.println(nameClient + "is disconnected");
                          }
                      }

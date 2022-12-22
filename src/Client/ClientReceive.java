@@ -30,28 +30,29 @@ public class ClientReceive implements Runnable{
                 String line = bufferedReader.readLine();
                 String lineTemp[] = line.split("`");
                 String nameClient = lineTemp[0];
-                String message = lineTemp[1];
-                String info = lineTemp[2];
+                String infoMessage = lineTemp[1];
 
-                if (info.equals("2")) {
+                if (infoMessage.equals("Connect success")) {
                     JOptionPane.showMessageDialog(null, "Kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     jButtonConnect.setText("Đóng kết nối");
                 }
-                else if(info.equals("3")) {
+                else if(infoMessage.equals("Disconnect success")) {
                     JOptionPane.showMessageDialog(null, "Đóng kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     socket.close();
                     bufferedReader.close();
                     jButtonConnect.setText("Kết nối");
+                    path = "";
+                    jTextPath.setText("");
                     break;
                 }
-                else if (info.equals("4")) {
+                else if (infoMessage.equals("Connect fail")) {
                     socket.close();
                     bufferedReader.close();
                     JOptionPane.showMessageDialog(null, "Đã có người sử dụng tên này!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                     break;
                 }
-                else if (info.equals("5")) {
-                    path = lineTemp[3];
+                else if (infoMessage.equals("Change Folder Monitoring")) {
+                    path = lineTemp[2];
                     jTextPath.setText(path);
                 }
             }

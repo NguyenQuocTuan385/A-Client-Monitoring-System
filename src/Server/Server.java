@@ -15,7 +15,7 @@ import java.util.TreeMap;
 
 public class Server extends JFrame implements Runnable, ActionListener {
     private int port;
-    private ServerSocket serverSocket;
+    private ServerSocket serverSocket = null;
     private ArrayList<Socket> listClient;
     private ArrayList<String> listNameClient;
     private TreeMap<String, Socket> mapClient;
@@ -27,6 +27,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
     private JTable jTableListActionClient;
     private  JButton jButtonStart;
     private JFileChooser chooser;
+    private boolean isStart;
 
     public Server() {
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -52,6 +53,8 @@ public class Server extends JFrame implements Runnable, ActionListener {
         jButtonStart.setFont(fontBody);
         jButtonStart.setPreferredSize(new Dimension(150,40));
         jButtonStart.addActionListener(this);
+        jButtonStart.setBackground(new Color(1, 119, 216));
+        jButtonStart.setForeground(Color.white);
 
         jPanelHeaderLeft.add(jPanelPort);
         jPanelHeaderLeft.add(jButtonStart);
@@ -158,6 +161,8 @@ public class Server extends JFrame implements Runnable, ActionListener {
         JScrollPane sc1 = new JScrollPane(jTableListClient, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JButton jButtonSelectFolder = new JButton("Chọn thư mục");
         jButtonSelectFolder.addActionListener(this);
+        jButtonSelectFolder.setBackground(new Color(1, 119, 216));
+        jButtonSelectFolder.setForeground(Color.white);
 
         JPanel jPanelBody1= new JPanel(new BorderLayout());
         jPanelBody1.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
@@ -186,16 +191,25 @@ public class Server extends JFrame implements Runnable, ActionListener {
         Socket s = new Socket();
         System.out.println("Bắt đầu khởi động máy chủ");
         try {
-            serverSocket = new ServerSocket(port);
+            if (serverSocket == null) {
+                serverSocket = new ServerSocket(port);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        while (true) {
+        while (isStart) {
             try {
+                if (isStart == false) {
+                    if (serverSocket != null) {
+                        serverSocket.close();
+                        serverSocket = null;
+                    }
+                    break;
+                }
                 s = serverSocket.accept();
                 listClient.add(s);
-                new Thread(new ServerReceive(s, listClient, listNameClient, mapClient, dtmListClient, mapPathClient)).start();
+                new Thread(new ServerReceive(s, listClient, listNameClient, mapClient, dtmListClient, mapPathClient, isStart)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -211,6 +225,8 @@ public class Server extends JFrame implements Runnable, ActionListener {
             }
             else {
                 this.port = Integer.parseInt(portServer.getText());
+                isStart = true;
+                jButtonStart.setText("Stop");
                 new Thread(this).start();
             }
         }
@@ -236,7 +252,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
                     mapPathClient.put(username, pathChange);
 
                     try {
-                        new ServerSend(socket,"Change Folder Monitoring", "5", "server", pathChange);
+                        new ServerSend(socket,"Change Folder Monitoring", "server", pathChange);
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
@@ -246,6 +262,10 @@ public class Server extends JFrame implements Runnable, ActionListener {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn client để đổi thư mục giám sát"
                         , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
+        }
+        else if (strAction.equals("Stop")) {
+            isStart = false;
+            jButtonStart.setText("Start");
         }
     }
 
