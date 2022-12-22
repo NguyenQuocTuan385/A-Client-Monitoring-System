@@ -209,7 +209,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
                 }
                 s = serverSocket.accept();
                 listClient.add(s);
-                new Thread(new ServerReceive(s, listClient, listNameClient, mapClient, dtmListClient, mapPathClient, isStart)).start();
+                new Thread(new ServerReceive(s, listClient, listNameClient, mapClient, dtmListClient, mapPathClient, isStart, dtmListActionClient)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }

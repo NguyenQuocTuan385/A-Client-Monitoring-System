@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 
 public class ClientHandler extends JFrame implements ActionListener {
@@ -78,7 +80,6 @@ public class ClientHandler extends JFrame implements ActionListener {
         };
         dtmClient.addColumn("Username");
         dtmClient.addColumn("Action");
-        dtmClient.addColumn("Ip Address");
         dtmClient.addColumn("Description");
 
         jTableClient = new JTable(dtmClient);
@@ -104,6 +105,10 @@ public class ClientHandler extends JFrame implements ActionListener {
         jTableClient.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         jTableClient.setRowSelectionAllowed(true);
         jTableClient.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+
+        jTableClient.getColumnModel().getColumn(0).setPreferredWidth(25);
+        jTableClient.getColumnModel().getColumn(1).setPreferredWidth(75);
+        jTableClient.getColumnModel().getColumn(2).setPreferredWidth(300);
 
         JScrollPane sc = new JScrollPane(jTableClient, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JPanel jPanelBody = new JPanel(new BorderLayout());
@@ -142,10 +147,11 @@ public class ClientHandler extends JFrame implements ActionListener {
                     port = Integer.parseInt(portServer.getText());
                     this.clientUsername = username.getText();
                     this.socket = new Socket("127.0.0.1", port);
-                    dirCurrent = "C:";
+                    dirCurrent = "E:/";
                     jTextPath.setText(dirCurrent);
                     new ClientSend(socket, "Connect",clientUsername, dirCurrent);
                     new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath)).start();
+                    new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, dirCurrent)).start();
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                 }

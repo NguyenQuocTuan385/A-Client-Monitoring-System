@@ -15,11 +15,12 @@ public class ServerReceive implements Runnable{
     private TreeMap<String , Socket> mapNameClient;
     private TreeMap<String, String> mapPathClient;
     private DefaultTableModel dtmListClient;
+    private DefaultTableModel dtmListActionClient;
     private boolean isStart;
 
     public ServerReceive(Socket s, ArrayList<Socket> listClient, ArrayList<String> listNameClient,
                          TreeMap<String, Socket> map, DefaultTableModel dtmListClient, TreeMap<String, String> mapPathClient,
-                         boolean isStart) {
+                         boolean isStart, DefaultTableModel dtmListActionClient) {
         this.mapPathClient = mapPathClient;
         this.dtmListClient = dtmListClient;
         this.socket = s;
@@ -27,6 +28,7 @@ public class ServerReceive implements Runnable{
         this.listNameClient = listNameClient;
         this.mapNameClient = map;
         this.isStart = isStart;
+        this.dtmListActionClient = dtmListActionClient;
     }
 
     @Override
@@ -66,8 +68,32 @@ public class ServerReceive implements Runnable{
                              mapPathClient.remove(nameClient);
                              listClient.remove(socket);
                              new ServerSend(socket, "Disconnect success", "server");
-                             System.out.println(nameClient + "is disconnected");
+                             System.out.println("Username:" + nameClient + " was disconnected");
                          }
+                     }
+                     else if (infoMessage.equals("Created")) {
+                         String filename = lineTemp[3];
+                         Vector<String>vec = new Vector<>();
+                         vec.add(nameClient);
+                         vec.add("Created");
+                         vec.add("A new file " + filename + " was created");
+                         dtmListActionClient.addRow(vec);
+                     }
+                     else if (infoMessage.equals("Deleted")) {
+                         String filename = lineTemp[3];
+                         Vector<String>vec = new Vector<>();
+                         vec.add(nameClient);
+                         vec.add("Deleted");
+                         vec.add("A new file " + filename + " was deleted");
+                         dtmListActionClient.addRow(vec);
+                     }
+                     else if (infoMessage.equals("Modified")) {
+                         String filename = lineTemp[3];
+                         Vector<String>vec = new Vector<>();
+                         vec.add(nameClient);
+                         vec.add("Modified");
+                         vec.add("A new file " + filename + " was modified");
+                         dtmListActionClient.addRow(vec);
                      }
                 }
 
