@@ -19,6 +19,7 @@ public class ClientHandler extends JFrame implements ActionListener {
     private DefaultTableModel dtmClient;
     private JTable jTableClient;
     private  JButton jButtonConnect;
+    private JTextField jTextPath;
 
     public ClientHandler() {
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -31,7 +32,7 @@ public class ClientHandler extends JFrame implements ActionListener {
         Font fontBody = new Font("Arial", Font.PLAIN, 20);
 
         JPanel jPanelHeader = new JPanel(new FlowLayout(FlowLayout.LEFT, 30,10));
-        jPanelHeader.setPreferredSize(new Dimension(1000, 60));
+        jPanelHeader.setPreferredSize(new Dimension(1000, 100));
 
         JPanel jPanelPort = new JPanel(new FlowLayout());
         JLabel jLabelPort = new JLabel("Port");
@@ -52,9 +53,18 @@ public class ClientHandler extends JFrame implements ActionListener {
         jButtonConnect.setPreferredSize(new Dimension(150,40));
         jButtonConnect.addActionListener(this);
 
+        JPanel jPanelPath = new JPanel(new FlowLayout());
+        JLabel jLabelPath = new JLabel("Path");
+        jLabelPath.setFont(fontBody);
+        jTextPath = new JTextField(20);
+        jTextPath.setEditable(false);
+        jPanelPath.add(jLabelPath);
+        jPanelPath.add(jTextPath);
+
         jPanelHeader.add(jPanelPort);
         jPanelHeader.add(jPanelUsername);
         jPanelHeader.add(jButtonConnect);
+        jPanelHeader.add(jPanelPath);
         jPanelHeader.setBorder(BorderFactory.createEmptyBorder(10, 50, 0, 50));
 
         dtmClient = new DefaultTableModel() {
@@ -99,6 +109,20 @@ public class ClientHandler extends JFrame implements ActionListener {
         jPanelBody.add(sc);
         jPanelBody.setPreferredSize(new Dimension(1000,500));
 
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                if (jButtonConnect.getText().equals("Đóng kết nối")) {
+                    try {
+                        new ClientSend(socket, "Disconnect", "3",clientUsername, dirCurrent);
+                        socket.close();
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Đóng kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
+
         this.setLayout(new BorderLayout());
         this.add(jPanelHeader, BorderLayout.PAGE_START);
         this.add(jPanelBody, BorderLayout.CENTER);
@@ -117,9 +141,9 @@ public class ClientHandler extends JFrame implements ActionListener {
                     this.clientUsername = username.getText();
                     this.socket = new Socket("127.0.0.1", port);
                     dirCurrent = "C:";
-
+                    jTextPath.setText(dirCurrent);
                     new ClientSend(socket, "Connected", "2",clientUsername, dirCurrent);
-                    new Thread(new ClientReceive(socket,jButtonConnect)).start();
+                    new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath)).start();
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                 }

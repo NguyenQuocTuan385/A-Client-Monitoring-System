@@ -17,7 +17,8 @@ public class ServerReceive implements Runnable{
     private DefaultTableModel dtmListClient;
 
     public ServerReceive(Socket s, ArrayList<Socket> listClient, ArrayList<String> listNameClient,
-                         TreeMap<String, Socket> map, DefaultTableModel dtmListClient) {
+                         TreeMap<String, Socket> map, DefaultTableModel dtmListClient, TreeMap<String, String> mapPathClient) {
+        this.mapPathClient = mapPathClient;
         this.dtmListClient = dtmListClient;
         this.socket = s;
         this.listClient = listClient;
@@ -44,13 +45,13 @@ public class ServerReceive implements Runnable{
                             listNameClient.add(nameClient);
                             mapNameClient.put(nameClient, socket);
                             mapPathClient.put(nameClient, path);
-                            int index = listNameClient.size();
+                            int index = listNameClient.indexOf(nameClient);
                             Vector<String>vec = new Vector<>();
                             vec.add(String.valueOf(index));
                             vec.add(nameClient);
                             vec.add(path);
                             dtmListClient.addRow(vec);
-                            new ServerSend(listClient, message, "2", nameClient);
+                            new ServerSend(socket, message, "2", nameClient);
                         } else {
                             listClient.remove(socket);
                             new ServerSend(socket, "", "4", "server");

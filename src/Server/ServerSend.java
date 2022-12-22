@@ -28,4 +28,12 @@ public class ServerSend {
         bufferedWriter.newLine();
         bufferedWriter.flush();
     }
+    ServerSend(Socket socket, String message, String info, String name, String path) throws IOException {
+        String messages = name + "`" + message + "`" + info + "`" + path;
+        BufferedWriter bufferedWriter;
+        bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+        bufferedWriter.write(messages);
+        bufferedWriter.newLine();
+        bufferedWriter.flush();
+    }
 }
