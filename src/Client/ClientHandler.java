@@ -27,7 +27,7 @@ public class ClientHandler extends JFrame implements ActionListener {
         JFrame.setDefaultLookAndFeelDecorated(true);
         this.setTitle("Client Connect");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1000, 600);
+        this.setSize(1000, 700);
         this.setLocationRelativeTo(null);
 
         Font fontHeaderAndFooter = new Font("Arial", Font.BOLD, 35);
@@ -70,6 +70,13 @@ public class ClientHandler extends JFrame implements ActionListener {
         jPanelHeader.add(jButtonConnect);
         jPanelHeader.add(jPanelPath);
         jPanelHeader.setBorder(BorderFactory.createEmptyBorder(10, 50, 0, 50));
+
+        JLabel jLabelServer = new JLabel("Client UI", JLabel.CENTER);
+        jLabelServer.setFont(fontHeaderAndFooter);
+        jLabelServer.setForeground(new Color(1, 119, 216));
+        JPanel jPanelHeaderFinal = new JPanel(new BorderLayout());
+        jPanelHeaderFinal.add(jLabelServer,BorderLayout.PAGE_START);
+        jPanelHeaderFinal.add(jPanelHeader, BorderLayout.CENTER);
 
         dtmClient = new DefaultTableModel() {
             @Override
@@ -131,7 +138,7 @@ public class ClientHandler extends JFrame implements ActionListener {
         });
 
         this.setLayout(new BorderLayout());
-        this.add(jPanelHeader, BorderLayout.PAGE_START);
+        this.add(jPanelHeaderFinal, BorderLayout.PAGE_START);
         this.add(jPanelBody, BorderLayout.CENTER);
         this.setVisible(true);
     }
@@ -150,7 +157,7 @@ public class ClientHandler extends JFrame implements ActionListener {
                     dirCurrent = "E:\\";
                     jTextPath.setText(dirCurrent);
                     new ClientSend(socket, "Connect",clientUsername, dirCurrent);
-                    new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath)).start();
+                    new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath, dtmClient)).start();
                     new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, dirCurrent, jTextPath, jButtonConnect)).start();
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
@@ -160,6 +167,7 @@ public class ClientHandler extends JFrame implements ActionListener {
         else if (strAction.equals("Đóng kết nối")) {
             try {
                 new ClientSend(socket, "Disconnect",clientUsername, dirCurrent);
+                dtmClient.setRowCount(0);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Đóng kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
             }

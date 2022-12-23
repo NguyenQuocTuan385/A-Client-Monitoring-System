@@ -1,6 +1,7 @@
 package Client;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -13,13 +14,16 @@ public class ClientReceive implements Runnable{
    private String clientUsername;
     private String path;
     private  JTextField jTextPath;
-    public ClientReceive(Socket socket, JButton jButtonConnect, String path, String clientUsername, JTextField jTextPath)
+    private DefaultTableModel dtmClient;
+    public ClientReceive(Socket socket, JButton jButtonConnect, String path, String clientUsername, JTextField jTextPath
+                        ,DefaultTableModel dtmClient)
     {
         this.path = path;
         this.socket = socket;
         this.jButtonConnect = jButtonConnect;
         this.clientUsername = clientUsername;
         this.jTextPath = jTextPath;
+        this.dtmClient = dtmClient;
     }
 
     @Override
@@ -48,6 +52,10 @@ public class ClientReceive implements Runnable{
                             new ClientSend(socket, "Disconnect",clientUsername, "Server stop all");
                             System.out.println("Đóng kết nối thành công");
                         }
+                        else if (nameClient.equals("Server stop all exit window")) {
+                            JOptionPane.showMessageDialog(null, "Server đã đóng kết nối!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                            System.out.println("Đóng kết nối thành công");
+                        }
                         else {
                             JOptionPane.showMessageDialog(null, "Đóng kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                             System.out.println("Đóng kết nối thành công");
@@ -57,6 +65,7 @@ public class ClientReceive implements Runnable{
                         jButtonConnect.setText("Kết nối");
                         path = "";
                         jTextPath.setText("");
+                        dtmClient.setRowCount(0);
                         break;
                     }
                     else if (infoMessage.equals("Connect fail")) {

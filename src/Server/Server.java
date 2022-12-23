@@ -1,6 +1,7 @@
 package Server;
 
 import Client.ClientHandler;
+import Client.ClientSend;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -32,9 +33,9 @@ public class Server extends JFrame implements Runnable, ActionListener {
 
     public Server() {
         JFrame.setDefaultLookAndFeelDecorated(true);
-        this.setTitle("Client Connect");
+        this.setTitle("Server");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setSize(1400, 600);
+        this.setSize(1400, 700);
         this.setLocationRelativeTo(null);
 
         Font fontHeaderAndFooter = new Font("Arial", Font.BOLD, 35);
@@ -56,6 +57,10 @@ public class Server extends JFrame implements Runnable, ActionListener {
         jButtonStart.addActionListener(this);
         jButtonStart.setBackground(new Color(1, 119, 216));
         jButtonStart.setForeground(Color.white);
+
+        JLabel jLabelServer = new JLabel("Server UI", JLabel.CENTER);
+        jLabelServer.setFont(fontHeaderAndFooter);
+        jLabelServer.setForeground(new Color(1, 119, 216));
 
         jPanelHeaderLeft.add(jPanelPort);
         jPanelHeaderLeft.add(jButtonStart);
@@ -178,9 +183,25 @@ public class Server extends JFrame implements Runnable, ActionListener {
         jPanelBodyRight.setBorder(BorderFactory.createEmptyBorder(0, 0, 20, 0));
 
         this.setLayout(new BorderLayout());
+        this.add(jLabelServer, BorderLayout.PAGE_START);
         this.add(jPanelBodyLeft, BorderLayout.LINE_START);
         this.add(jPanelBodyRight, BorderLayout.LINE_END);
         this.setVisible(true);
+
+        this.addWindowListener(new java.awt.event.WindowAdapter() {
+            @Override
+            public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+                if (jButtonStart.getText().equals("Stop")) {
+                    try {
+                        new ServerSend(listClient, "Disconnect success", "Server stop all exit window");
+                        isStart = false;
+                        jButtonStart.setText("Start");
+                    } catch (IOException ex) {
+                        JOptionPane.showMessageDialog(null, "Đóng kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+        });
     }
 
     @Override
@@ -193,10 +214,12 @@ public class Server extends JFrame implements Runnable, ActionListener {
         System.out.println("Bắt đầu khởi động máy chủ");
         try {
             if (serverSocket == null) {
+                JOptionPane.showMessageDialog(null, "Start server thành công!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 serverSocket = new ServerSocket(port);
             }
         } catch (IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "Start server thất bại!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
         }
 
         while (isStart) {
@@ -216,8 +239,11 @@ public class Server extends JFrame implements Runnable, ActionListener {
             try {
                 serverSocket.close();
                 serverSocket = null;
+                System.out.println("Stop máy chủ");
             } catch (IOException e) {
+                JOptionPane.showMessageDialog(null, "Stop server thất bại!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                 throw new RuntimeException(e);
+
             }
         }
     }
@@ -274,6 +300,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
                 new ServerSend(listClient, "Disconnect success", "Server stop all");
                 isStart = false;
                 jButtonStart.setText("Start");
+                JOptionPane.showMessageDialog(null, "Stop server thành công!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

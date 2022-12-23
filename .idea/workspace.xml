@@ -7,7 +7,6 @@
       <change beforePath="$PROJECT_DIR$/src/Client/ClientReceive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/ClientReceive.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client/MonitoringFolder.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/MonitoringFolder.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Server/ServerReceive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/ServerReceive.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

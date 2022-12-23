@@ -57,15 +57,18 @@ public class MonitoringFolder implements Runnable {
                             vec.add(username);
                             vec.add("Created");
                             File filePath =  dir.resolve(fileName).toFile();
-                            if (filePath.isDirectory()) {
-                                filenamePath = "A new folder was created in path " + dir.resolve(fileName);
-                                vec.add(filenamePath);
-                            } else if(filePath.isFile()) {
-                                filenamePath = "A new file was created in path " + dir.resolve(fileName);
-                                vec.add(filenamePath);
+                            if (filePath.exists()) {
+                                if (filePath.isDirectory()) {
+                                    filenamePath = "A new folder was created in path " + dir.resolve(fileName);
+                                    vec.add(filenamePath);
+
+                                } else if(filePath.isFile()) {
+                                    filenamePath = "A new file was created in path " + dir.resolve(fileName);
+                                    vec.add(filenamePath);
+                                }
+                                dtmClient.addRow(vec);
+                                new ClientSend(socket, "Created", username, pathCurrent, filenamePath);
                             }
-                            dtmClient.addRow(vec);
-                            new ClientSend(socket, "Created", username, pathCurrent, filenamePath);
                         }
                     } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
                         if (jButtonConnect.getText().equals("Đóng kết nối") && (socket.isClosed() == false))
@@ -78,14 +81,12 @@ public class MonitoringFolder implements Runnable {
                                 if (filePath.isDirectory()) {
                                     filenamePath = "A folder was modified in path " + dir.resolve(fileName);
                                     vec.add(filenamePath);
-                                    dtmClient.addRow(vec);
-                                    new ClientSend(socket, "Modified", username, pathCurrent, filenamePath);
                                 } else if(filePath.isFile()) {
                                     filenamePath = "A file was modified in path " + dir.resolve(fileName);
                                     vec.add(filenamePath);
-                                    dtmClient.addRow(vec);
-                                    new ClientSend(socket, "Modified", username, pathCurrent, filenamePath);
                                 }
+                                dtmClient.addRow(vec);
+                                new ClientSend(socket, "Modified", username, pathCurrent, filenamePath);
                             }
                         }
                     } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
@@ -94,7 +95,6 @@ public class MonitoringFolder implements Runnable {
                             Vector<String> vec = new Vector<>();
                             vec.add(username);
                             vec.add("Deleted");
-                            File filePath =  dir.resolve(fileName).toFile();
                             if (fileName.toString().indexOf('.') == -1) {
                                 filenamePath = "A folder was deleted in path " + dir.resolve(fileName);
                                 vec.add(filenamePath);
@@ -114,9 +114,6 @@ public class MonitoringFolder implements Runnable {
                 }
                 if (!jButtonConnect.getText().equals("Đóng kết nối"))
                 {
-//                    if (!socket.isClosed()) {
-//                        socket.close();
-//                    }
                     break;
                 }
             }
