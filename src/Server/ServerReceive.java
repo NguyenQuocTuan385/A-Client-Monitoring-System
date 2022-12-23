@@ -16,18 +16,18 @@ public class ServerReceive implements Runnable{
     private TreeMap<String, String> mapPathClient;
     private DefaultTableModel dtmListClient;
     private DefaultTableModel dtmListActionClient;
-    private JButton jButtonStart;
+    private boolean isStart;
 
     public ServerReceive(Socket s, ArrayList<Socket> listClient, ArrayList<String> listNameClient,
                          TreeMap<String, Socket> map, DefaultTableModel dtmListClient, TreeMap<String, String> mapPathClient,
-                        DefaultTableModel dtmListActionClient, JButton jButtonStart) {
+                        DefaultTableModel dtmListActionClient, boolean isStart) {
         this.mapPathClient = mapPathClient;
         this.dtmListClient = dtmListClient;
         this.socket = s;
         this.listClient = listClient;
         this.listNameClient = listNameClient;
         this.mapNameClient = map;
-        this.jButtonStart = jButtonStart;
+        this.isStart = isStart;
         this.dtmListActionClient = dtmListActionClient;
     }
 
@@ -35,7 +35,7 @@ public class ServerReceive implements Runnable{
     public void run() {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            while (jButtonStart.getText().equals("Stop")) {
+            while (isStart) {
                 String line = bufferedReader.readLine();
                 if (line != null) {
                     String lineTemp[] = line.split("`");
@@ -96,7 +96,6 @@ public class ServerReceive implements Runnable{
                          dtmListActionClient.addRow(vec);
                      }
                 }
-
             }
         }catch (IOException e) {
             e.printStackTrace();

@@ -201,20 +201,14 @@ public class Server extends JFrame implements Runnable, ActionListener {
 
         while (isStart) {
             try {
-                if (isStart == false) {
-                    if (serverSocket != null) {
-                        serverSocket.close();
-                        serverSocket = null;
-                    }
-                    break;
-                }
                 s = serverSocket.accept();
                 listClient.add(s);
-                new Thread(new ServerReceive(s, listClient, listNameClient, mapClient, dtmListClient, mapPathClient,dtmListActionClient, jButtonStart)).start();
+                new Thread(new ServerReceive(s, listClient, listNameClient, mapClient, dtmListClient, mapPathClient,dtmListActionClient, isStart)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+
     }
 
     @Override
@@ -266,22 +260,22 @@ public class Server extends JFrame implements Runnable, ActionListener {
         }
         else if (strAction.equals("Stop")) {
             isStart = false;
-            try {
-                new ServerSend(listClient, "Server stop", "server");
-                jButtonStart.setText("Start");
-                dtmListClient.setRowCount(0);
-                dtmListActionClient.setRowCount(0);
-                for (Socket socketClose : listClient){
-                    socketClose.close();
-                }
-                Set<String> keySet = mapClient.keySet();
-                for (String key : keySet) {
-                    mapClient.get(key).close();
-                }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-
+            jButtonStart.setText("Start");
+//            try {
+//                new ServerSend(listClient, "Server stop", "server");
+//                jButtonStart.setText("Start");
+//                dtmListClient.setRowCount(0);
+//                dtmListActionClient.setRowCount(0);
+//                for (Socket socketClose : listClient){
+//                    socketClose.close();
+//                }
+//                Set<String> keySet = mapClient.keySet();
+//                for (String key : keySet) {
+//                    mapClient.get(key).close();
+//                }
+//            } catch (IOException ex) {
+//                throw new RuntimeException(ex);
+//            }
         }
     }
 
