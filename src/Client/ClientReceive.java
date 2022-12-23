@@ -38,7 +38,12 @@ public class ClientReceive implements Runnable{
                         jButtonConnect.setText("Đóng kết nối");
                     }
                     else if(infoMessage.equals("Disconnect success")) {
-                        JOptionPane.showMessageDialog(null, "Đóng kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        if (nameClient.equals("Server stop")) {
+                            JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
+                        }
+                        else {
+                            JOptionPane.showMessageDialog(null, "Đóng kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                        }
                         socket.close();
                         bufferedReader.close();
                         jButtonConnect.setText("Kết nối");

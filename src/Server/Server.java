@@ -202,13 +202,24 @@ public class Server extends JFrame implements Runnable, ActionListener {
         while (isStart) {
             try {
                 s = serverSocket.accept();
+                if (isStart == false) {
+                    new ServerSend(s, "Disconnect success", "Server stop");
+                    break;
+                }
                 listClient.add(s);
                 new Thread(new ServerReceive(s, listClient, listNameClient, mapClient, dtmListClient, mapPathClient,dtmListActionClient, isStart)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-
+        if (serverSocket != null ){
+            try {
+                serverSocket.close();
+                serverSocket = null;
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     @Override
@@ -259,11 +270,10 @@ public class Server extends JFrame implements Runnable, ActionListener {
             }
         }
         else if (strAction.equals("Stop")) {
-            isStart = false;
-            jButtonStart.setText("Start");
-//            try {
-//                new ServerSend(listClient, "Server stop", "server");
-//                jButtonStart.setText("Start");
+            try {
+                new ServerSend(listClient, "Server stop", "server");
+                isStart = false;
+                jButtonStart.setText("Start");
 //                dtmListClient.setRowCount(0);
 //                dtmListActionClient.setRowCount(0);
 //                for (Socket socketClose : listClient){
@@ -273,9 +283,9 @@ public class Server extends JFrame implements Runnable, ActionListener {
 //                for (String key : keySet) {
 //                    mapClient.get(key).close();
 //                }
-//            } catch (IOException ex) {
-//                throw new RuntimeException(ex);
-//            }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
         }
     }
 

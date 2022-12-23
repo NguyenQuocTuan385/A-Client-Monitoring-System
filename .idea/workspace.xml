@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="840b4b2a-3cc2-4c22-b59d-30394f92cfaa" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/3/7/37e3a60d5ab4842d1f11cb2f3d8c2fbf27d44733" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sonarlint/issuestore/index.pb" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Client/ClientReceive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Client/ClientReceive.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Server/Server.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/Server.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Server/ServerReceive.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Server/ServerReceive.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
