@@ -11,6 +11,7 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Set;
 import java.util.TreeMap;
 
 public class Server extends JFrame implements Runnable, ActionListener {
@@ -209,7 +210,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
                 }
                 s = serverSocket.accept();
                 listClient.add(s);
-                new Thread(new ServerReceive(s, listClient, listNameClient, mapClient, dtmListClient, mapPathClient, isStart, dtmListActionClient)).start();
+                new Thread(new ServerReceive(s, listClient, listNameClient, mapClient, dtmListClient, mapPathClient,dtmListActionClient, jButtonStart)).start();
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -265,7 +266,22 @@ public class Server extends JFrame implements Runnable, ActionListener {
         }
         else if (strAction.equals("Stop")) {
             isStart = false;
-            jButtonStart.setText("Start");
+            try {
+                new ServerSend(listClient, "Server stop", "server");
+                jButtonStart.setText("Start");
+                dtmListClient.setRowCount(0);
+                dtmListActionClient.setRowCount(0);
+                for (Socket socketClose : listClient){
+                    socketClose.close();
+                }
+                Set<String> keySet = mapClient.keySet();
+                for (String key : keySet) {
+                    mapClient.get(key).close();
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+
         }
     }
 

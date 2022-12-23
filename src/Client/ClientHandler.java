@@ -147,11 +147,11 @@ public class ClientHandler extends JFrame implements ActionListener {
                     port = Integer.parseInt(portServer.getText());
                     this.clientUsername = username.getText();
                     this.socket = new Socket("127.0.0.1", port);
-                    dirCurrent = "E:/";
+                    dirCurrent = "E:\\";
                     jTextPath.setText(dirCurrent);
                     new ClientSend(socket, "Connect",clientUsername, dirCurrent);
                     new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath)).start();
-                    new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, dirCurrent)).start();
+                    new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, dirCurrent, jTextPath)).start();
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                 }

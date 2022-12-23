@@ -1,6 +1,8 @@
 package Client;
 
+import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import java.io.File;
 import java.io.IOException;
 import java.net.Socket;
 import java.nio.file.*;
@@ -13,24 +15,28 @@ public class MonitoringFolder implements Runnable {
     private DefaultTableModel dtmClient;
     private String username;
     private String pathCurrent;
-    public MonitoringFolder(Socket socket, DefaultTableModel dtmClient, String username, String pathCurrent) {
+    private JTextField jTextPath;
+    public MonitoringFolder(Socket socket, DefaultTableModel dtmClient, String username, String pathCurrent, JTextField jTextPath) {
         this.socket = socket;
-        dir = Paths.get(pathCurrent);
         this.pathCurrent = pathCurrent;
         this.dtmClient = dtmClient;
         this.username = username;
+        this.jTextPath = jTextPath;
     }
 
     @Override
     public void run()  {
         try {
             WatchService watcher = FileSystems.getDefault().newWatchService();
-            dir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE,
-                    StandardWatchEventKinds.ENTRY_MODIFY);
-
-            WatchKey key = null;
+            WatchKey key;
             while (true) {
                 try {
+                    pathCurrent = jTextPath.getText();
+                    dir = Paths.get(pathCurrent);
+                    dir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE,
+                            StandardWatchEventKinds.ENTRY_MODIFY);
+                    System.out.println("Watch Service registered for dir: " + dir.getFileName());
+                    key = null;
                     key = watcher.take();
                 } catch (InterruptedException ex) {
                     System.out.println("InterruptedException: " + ex.getMessage());
@@ -42,27 +48,54 @@ public class MonitoringFolder implements Runnable {
                     WatchEvent.Kind<?> kind = event.kind();
                     WatchEvent<Path> ev = (WatchEvent<Path>) event;
                     Path fileName = ev.context();
+                    String filenamePath = "";
                     if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
                         Vector<String> vec = new Vector<>();
                         vec.add(username);
                         vec.add("Created");
-                        vec.add("A new file " + fileName.getFileName() + " was created");
+                        File filePath =  dir.resolve(fileName).toFile();
+                        if (filePath.isDirectory()) {
+                            filenamePath = "A new folder was created in path " + dir.resolve(fileName);
+                            vec.add(filenamePath);
+                        } else if(filePath.isFile()) {
+                            filenamePath = "A new file was created in path " + dir.resolve(fileName);
+                            vec.add(filenamePath);
+                        }
                         dtmClient.addRow(vec);
-                        new ClientSend(socket, "Created", username, pathCurrent, fileName.getFileName().toString());
+                        new ClientSend(socket, "Created", username, pathCurrent, filenamePath);
                     } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
                         Vector<String> vec = new Vector<>();
                         vec.add(username);
                         vec.add("Modified");
-                        vec.add("A new file " + fileName.getFileName() + " was modified");
-                        dtmClient.addRow(vec);
-                        new ClientSend(socket, "Modified", username, pathCurrent, fileName.getFileName().toString());
+                        File filePath =  dir.resolve(fileName).toFile();
+                        if (filePath.exists()) {
+                            if (filePath.isDirectory()) {
+                                filenamePath = "A folder was modified in path " + dir.resolve(fileName);
+                                vec.add(filenamePath);
+                                dtmClient.addRow(vec);
+                                new ClientSend(socket, "Modified", username, pathCurrent, filenamePath);
+                            } else if(filePath.isFile()) {
+                                filenamePath = "A file was modified in path " + dir.resolve(fileName);
+                                vec.add(filenamePath);
+                                dtmClient.addRow(vec);
+                                new ClientSend(socket, "Modified", username, pathCurrent, filenamePath);
+                            }
+                        }
+
                     } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
                         Vector<String> vec = new Vector<>();
                         vec.add(username);
                         vec.add("Deleted");
-                        vec.add("A new file " + fileName.getFileName() + " was deleted");
+                        File filePath =  dir.resolve(fileName).toFile();
+                        if (fileName.toString().indexOf('.') == -1) {
+                            filenamePath = "A folder was deleted in path " + dir.resolve(fileName);
+                            vec.add(filenamePath);
+                        } else {
+                            filenamePath = "A file was deleted in path " + dir.resolve(fileName);
+                            vec.add(filenamePath);
+                        }
                         dtmClient.addRow(vec);
-                        new ClientSend(socket, "Deleted", username, pathCurrent, fileName.getFileName().toString());
+                        new ClientSend(socket, "Deleted", username, pathCurrent, filenamePath);
                     }
                 }
 

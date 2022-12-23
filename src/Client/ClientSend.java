@@ -14,8 +14,8 @@ public class ClientSend {
         bufferedWriter.newLine();
         bufferedWriter.flush();
     }
-    ClientSend(Socket socket, String infoMessage, String name, String path, String fileName) throws IOException {
-        String messages = name + "`" + infoMessage + "`" + path + "`" + fileName;
+    ClientSend(Socket socket, String infoMessage, String name, String path, String descriptionAction) throws IOException {
+        String messages = name + "`" + infoMessage + "`" + path + "`" + descriptionAction;
         BufferedWriter bufferedWriter;
         bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
         bufferedWriter.write(messages);
