@@ -67,7 +67,9 @@ public class ServerReceive implements Runnable{
                              mapNameClient.remove(nameClient);
                              mapPathClient.remove(nameClient);
                              listClient.remove(socket);
-                             new ServerSend(socket, "Disconnect success", "server");
+                             if (!path.equals("Server stop all")) {
+                                 new ServerSend(socket, "Disconnect success", "server");
+                             }
                              System.out.println("Username:" + nameClient + " was disconnected");
                          }
                      }
@@ -95,6 +97,7 @@ public class ServerReceive implements Runnable{
                          vec.add(descriptionAction);
                          dtmListActionClient.addRow(vec);
                      }
+
                 }
             }
         }catch (IOException e) {

@@ -271,18 +271,9 @@ public class Server extends JFrame implements Runnable, ActionListener {
         }
         else if (strAction.equals("Stop")) {
             try {
-                new ServerSend(listClient, "Server stop", "server");
+                new ServerSend(listClient, "Disconnect success", "Server stop all");
                 isStart = false;
                 jButtonStart.setText("Start");
-//                dtmListClient.setRowCount(0);
-//                dtmListActionClient.setRowCount(0);
-//                for (Socket socketClose : listClient){
-//                    socketClose.close();
-//                }
-//                Set<String> keySet = mapClient.keySet();
-//                for (String key : keySet) {
-//                    mapClient.get(key).close();
-//                }
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }

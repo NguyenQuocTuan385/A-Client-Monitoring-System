@@ -36,13 +36,21 @@ public class ClientReceive implements Runnable{
                     if (infoMessage.equals("Connect success")) {
                         JOptionPane.showMessageDialog(null, "Kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                         jButtonConnect.setText("Đóng kết nối");
+                        System.out.println("Kết nối server thành công");
                     }
                     else if(infoMessage.equals("Disconnect success")) {
                         if (nameClient.equals("Server stop")) {
                             JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                         }
+                        else if (nameClient.equals("Server stop all"))
+                        {
+                            JOptionPane.showMessageDialog(null, "Server đã đóng kết nối!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                            new ClientSend(socket, "Disconnect",clientUsername, "Server stop all");
+                            System.out.println("Đóng kết nối thành công");
+                        }
                         else {
                             JOptionPane.showMessageDialog(null, "Đóng kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                            System.out.println("Đóng kết nối thành công");
                         }
                         socket.close();
                         bufferedReader.close();
@@ -60,15 +68,6 @@ public class ClientReceive implements Runnable{
                     else if (infoMessage.equals("Change Folder Monitoring")) {
                         path = lineTemp[2];
                         jTextPath.setText(path);
-                    }
-                    else if (infoMessage.equals("Server stop")) {
-                        JOptionPane.showMessageDialog(null, "Server đóng kết nối","Thông báo", JOptionPane.INFORMATION_MESSAGE);
-                        socket.close();
-                        bufferedReader.close();
-                        jButtonConnect.setText("Kết nối");
-                        path = "";
-                        jTextPath.setText("");
-                        break;
                     }
                 }
             }

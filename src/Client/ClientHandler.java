@@ -151,7 +151,7 @@ public class ClientHandler extends JFrame implements ActionListener {
                     jTextPath.setText(dirCurrent);
                     new ClientSend(socket, "Connect",clientUsername, dirCurrent);
                     new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath)).start();
-                    new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, dirCurrent, jTextPath)).start();
+                    new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, dirCurrent, jTextPath, jButtonConnect)).start();
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                 }
