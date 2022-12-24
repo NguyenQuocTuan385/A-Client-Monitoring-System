@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.nio.file.*;
 import java.util.Vector;
+import java.util.concurrent.TimeUnit;
 
 public class MonitoringFolder implements Runnable {
     private Socket socket;
@@ -29,7 +30,6 @@ public class MonitoringFolder implements Runnable {
     public void run()  {
         try {
             while (true) {
-                System.out.println("Hello 1");
                 WatchService watcher = FileSystems.getDefault().newWatchService();
                 WatchKey key;
                 pathCurrent = jTextPath.getText();
@@ -39,17 +39,6 @@ public class MonitoringFolder implements Runnable {
                 try {
                     key = null;
                     key = watcher.take();
-//                    if (!pathCurrent.equals(jTextPath.getText())) {
-//                        watcher = null;
-//                        dir = null;
-//                        watcher = FileSystems.getDefault().newWatchService();
-//                        pathCurrent = jTextPath.getText();
-//                        dir = Paths.get(pathCurrent);
-//                        dir.register(watcher, StandardWatchEventKinds.ENTRY_CREATE, StandardWatchEventKinds.ENTRY_DELETE,
-//                                StandardWatchEventKinds.ENTRY_MODIFY);
-//                        key = null;
-//                        key = watcher.take(); //Synchronize
-//                    }
                 } catch (InterruptedException ex) {
                     System.out.println("InterruptedException: " + ex.getMessage());
                     return;
