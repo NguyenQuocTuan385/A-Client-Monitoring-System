@@ -16,20 +16,22 @@ public class MonitoringFolder implements Runnable {
     private String pathCurrent;
     private JTextField jTextPath;
     private  JButton jButtonConnect;
+    private  JTextField jTextStatus;
     public MonitoringFolder(Socket socket, DefaultTableModel dtmClient, String username, String pathCurrent, JTextField jTextPath,
-                            JButton jButtonConnect) {
+                            JButton jButtonConnect,JTextField jTextStatus) {
         this.socket = socket;
         this.pathCurrent = pathCurrent;
         this.dtmClient = dtmClient;
         this.username = username;
         this.jTextPath = jTextPath;
         this.jButtonConnect = jButtonConnect;
+        this.jTextStatus = jTextStatus;
     }
 
     @Override
     public void run()  {
         try {
-            while (true) {
+            while (jTextStatus.getText().equals("Being monitored")) {
                 WatchService watcher = FileSystems.getDefault().newWatchService();
                 WatchKey key;
                 pathCurrent = jTextPath.getText();
@@ -39,6 +41,10 @@ public class MonitoringFolder implements Runnable {
                 try {
                     key = null;
                     key = watcher.take();
+
+                    if (!jTextStatus.getText().equals("Being monitored")) {
+                        break;
+                    }
                 } catch (InterruptedException ex) {
                     System.out.println("InterruptedException: " + ex.getMessage());
                     return;

@@ -48,10 +48,9 @@ public class ServerReceive implements Runnable{
                             listNameClient.add(nameClient);
                             mapNameClient.put(nameClient, socket);
                             mapPathClient.put(nameClient, path);
-                            int index = listNameClient.indexOf(nameClient);
                             Vector<String>vec = new Vector<>();
-                            vec.add(String.valueOf(index));
                             vec.add(nameClient);
+                            vec.add("Start");
                             vec.add(path);
                             dtmListClient.addRow(vec);
                             new ServerSend(socket, "Connect success", "server");

@@ -132,8 +132,8 @@ public class Server extends JFrame implements Runnable, ActionListener {
                 return false;
             }
         };
-        dtmListClient.addColumn("ID");
         dtmListClient.addColumn("Username");
+        dtmListClient.addColumn("Status");
         dtmListClient.addColumn("Path");
 
         jTableListClient = new JTable(dtmListClient);
@@ -160,20 +160,36 @@ public class Server extends JFrame implements Runnable, ActionListener {
         jTableListClient.setRowSelectionAllowed(true);
         jTableListClient.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        jTableListClient.getColumnModel().getColumn(0).setPreferredWidth(50);
-        jTableListClient.getColumnModel().getColumn(1).setPreferredWidth(100);
+        jTableListClient.getColumnModel().getColumn(0).setPreferredWidth(100);
+        jTableListClient.getColumnModel().getColumn(1).setPreferredWidth(50);
         jTableListClient.getColumnModel().getColumn(2).setPreferredWidth(250);
 
         JScrollPane sc1 = new JScrollPane(jTableListClient, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
+
         JButton jButtonSelectFolder = new JButton("Chọn thư mục");
         jButtonSelectFolder.addActionListener(this);
         jButtonSelectFolder.setBackground(new Color(1, 119, 216));
         jButtonSelectFolder.setForeground(Color.white);
 
+        JButton jButtonStartMonitor = new JButton("Start monitor");
+        jButtonStartMonitor.addActionListener(this);
+        jButtonStartMonitor.setBackground(new Color(1, 119, 216));
+        jButtonStartMonitor.setForeground(Color.white);
+
+        JButton jButtonStopMonitor = new JButton("Stop monitor");
+        jButtonStopMonitor.addActionListener(this);
+        jButtonStopMonitor.setBackground(new Color(1, 119, 216));
+        jButtonStopMonitor.setForeground(Color.white);
+
+        JPanel jPanelBody1Bot = new JPanel(new FlowLayout(FlowLayout.CENTER, 10,10));
+        jPanelBody1Bot.add(jButtonSelectFolder);
+        jPanelBody1Bot.add(jButtonStartMonitor);
+        jPanelBody1Bot.add(jButtonStopMonitor);
+
         JPanel jPanelBody1= new JPanel(new BorderLayout());
         jPanelBody1.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
         jPanelBody1.add(sc1, BorderLayout.CENTER);
-        jPanelBody1.add(jButtonSelectFolder, BorderLayout.PAGE_END);
+        jPanelBody1.add(jPanelBody1Bot, BorderLayout.PAGE_END);
         jPanelBody1.setPreferredSize(new Dimension(400,500));
 
 
@@ -243,7 +259,6 @@ public class Server extends JFrame implements Runnable, ActionListener {
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(null, "Stop server thất bại!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                 throw new RuntimeException(e);
-
             }
         }
     }
@@ -268,7 +283,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
                 DefaultTableModel model = (DefaultTableModel) jTableListClient.getModel();
 
                 int selectedRowIndex = jTableListClient.getSelectedRow();
-                String username = model.getValueAt(selectedRowIndex, 1).toString();
+                String username = model.getValueAt(selectedRowIndex, 0).toString();
                 String path = model.getValueAt(selectedRowIndex, 2).toString();
 
                 chooser = new JFileChooser();
@@ -292,6 +307,62 @@ public class Server extends JFrame implements Runnable, ActionListener {
             }
             else {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn client để đổi thư mục giám sát"
+                        , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        else if (strAction.equals("Start monitor")) {
+            if (!jTableListClient.getSelectionModel().isSelectionEmpty()) {
+
+                DefaultTableModel model = (DefaultTableModel) jTableListClient.getModel();
+
+                int selectedRowIndex = jTableListClient.getSelectedRow();
+                String username = model.getValueAt(selectedRowIndex, 0).toString();
+                String status = model.getValueAt(selectedRowIndex, 1).toString();
+
+                if (status.equals("Stop")) {
+                    Socket socket = mapClient.get(username);
+                    status = "Start";
+                    try {
+                        new ServerSend(socket, "Start monitor", username);
+                        dtmListClient.setValueAt(status, selectedRowIndex, 1);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Client trước đó đã đang được giám sát!!!"
+                            , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn client để bắt đầu giám sát"
+                        , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        else if (strAction.equals("Stop monitor")) {
+            if (!jTableListClient.getSelectionModel().isSelectionEmpty()) {
+
+                DefaultTableModel model = (DefaultTableModel) jTableListClient.getModel();
+
+                int selectedRowIndex = jTableListClient.getSelectedRow();
+                String username = model.getValueAt(selectedRowIndex, 0).toString();
+                String status = model.getValueAt(selectedRowIndex, 1).toString();
+
+                if (status.equals("Start")) {
+                    Socket socket = mapClient.get(username);
+                    status = "Stop";
+                    try {
+                        new ServerSend(socket, "Stop monitor", username);
+                        dtmListClient.setValueAt(status, selectedRowIndex, 1);
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(this, "Client trước đó đã đang dừng giám sát!!!"
+                            , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn client để dừng giám sát"
                         , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         }

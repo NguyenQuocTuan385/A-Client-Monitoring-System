@@ -15,8 +15,9 @@ public class ClientReceive implements Runnable{
     private String path;
     private  JTextField jTextPath;
     private DefaultTableModel dtmClient;
+    private  JTextField jTextStatus;
     public ClientReceive(Socket socket, JButton jButtonConnect, String path, String clientUsername, JTextField jTextPath
-                        ,DefaultTableModel dtmClient)
+                        ,DefaultTableModel dtmClient, JTextField jTextStatus)
     {
         this.path = path;
         this.socket = socket;
@@ -24,6 +25,7 @@ public class ClientReceive implements Runnable{
         this.clientUsername = clientUsername;
         this.jTextPath = jTextPath;
         this.dtmClient = dtmClient;
+        this.jTextStatus = jTextStatus;
     }
 
     @Override
@@ -41,6 +43,7 @@ public class ClientReceive implements Runnable{
                         JOptionPane.showMessageDialog(null, "Kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                         jButtonConnect.setText("Đóng kết nối");
                         System.out.println("Kết nối server thành công");
+                        new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
                     }
                     else if(infoMessage.equals("Disconnect success")) {
                         if (nameClient.equals("Server stop")) {
@@ -65,6 +68,7 @@ public class ClientReceive implements Runnable{
                         jButtonConnect.setText("Kết nối");
                         path = "";
                         jTextPath.setText("");
+                        jTextStatus.setText("");
                         dtmClient.setRowCount(0);
                         break;
                     }
@@ -77,6 +81,13 @@ public class ClientReceive implements Runnable{
                     else if (infoMessage.equals("Change Folder Monitoring")) {
                         path = lineTemp[2];
                         jTextPath.setText(path);
+                    }
+                    else if (infoMessage.equals("Stop monitor")) {
+                        jTextStatus.setText("Is not being monitored");
+                    }
+                    else if (infoMessage.equals("Start monitor")) {
+                        jTextStatus.setText("Being monitored");
+                        new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
                     }
                 }
             }

@@ -19,6 +19,7 @@ public class ClientHandler extends JFrame implements ActionListener {
     private JTable jTableClient;
     private  JButton jButtonConnect;
     private JTextField jTextPath;
+    private JTextField jTextStatus;
 
     public ClientHandler() {
         JFrame.setDefaultLookAndFeelDecorated(true);
@@ -62,10 +63,19 @@ public class ClientHandler extends JFrame implements ActionListener {
         jPanelPath.add(jLabelPath);
         jPanelPath.add(jTextPath);
 
+        JPanel jPanelStatus = new JPanel(new FlowLayout());
+        JLabel jLabelStatus = new JLabel("Status");
+        jLabelStatus.setFont(fontBody);
+        jTextStatus = new JTextField(20);
+        jTextStatus.setEditable(false);
+        jPanelStatus.add(jLabelStatus);
+        jPanelStatus.add(jTextStatus);
+
         jPanelHeader.add(jPanelPort);
         jPanelHeader.add(jPanelUsername);
         jPanelHeader.add(jButtonConnect);
         jPanelHeader.add(jPanelPath);
+        jPanelHeader.add(jPanelStatus);
         jPanelHeader.setBorder(BorderFactory.createEmptyBorder(10, 50, 0, 50));
 
         JLabel jLabelServer = new JLabel("Client UI", JLabel.CENTER);
@@ -154,8 +164,8 @@ public class ClientHandler extends JFrame implements ActionListener {
                     dirCurrent = "E:\\";
                     jTextPath.setText(dirCurrent);
                     new ClientSend(socket, "Connect",clientUsername, dirCurrent);
-                    new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath, dtmClient)).start();
-                    new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, dirCurrent, jTextPath, jButtonConnect)).start();
+                    jTextStatus.setText("Being monitored");
+                    new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath, dtmClient, jTextStatus)).start();
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                 }
