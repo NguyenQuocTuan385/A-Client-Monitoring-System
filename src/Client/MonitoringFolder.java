@@ -42,7 +42,7 @@ public class MonitoringFolder implements Runnable {
                     key = null;
                     key = watcher.take();
 
-                    if (!jTextStatus.getText().equals("Being monitored")) {
+                    if (!jTextStatus.getText().equals("Being monitored") || (!pathCurrent.equals(jTextPath.getText()))) {
                         break;
                     }
                 } catch (InterruptedException ex) {

@@ -83,6 +83,7 @@ public class ClientReceive implements Runnable{
                     else if (infoMessage.equals("Change Folder Monitoring")) {
                         path = lineTemp[2];
                         jTextPath.setText(path);
+                        new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
                     }
                     else if (infoMessage.equals("Stop monitor")) {
                         jTextStatus.setText("Is not being monitored");
