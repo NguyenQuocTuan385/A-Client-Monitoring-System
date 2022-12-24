@@ -42,6 +42,7 @@ public class MonitoringFolder implements Runnable {
                     key = null;
                     key = watcher.take();
 
+                    //Nếu đang trogn trạng thái không được giám sát hoặc path cũ != path mới
                     if (!jTextStatus.getText().equals("Being monitored") || (!pathCurrent.equals(jTextPath.getText()))) {
                         break;
                     }
@@ -56,7 +57,7 @@ public class MonitoringFolder implements Runnable {
                     WatchEvent<Path> ev = (WatchEvent<Path>) event;
                     Path fileName = ev.context();
                     String descriptionAction = "";
-                    if (kind == StandardWatchEventKinds.ENTRY_CREATE) {
+                    if (kind == StandardWatchEventKinds.ENTRY_CREATE) { //Tạo mới file hoặc folder
                         if (jButtonConnect.getText().equals("Đóng kết nối") && (socket.isClosed() == false))
                         {
                             Vector<String> vec = new Vector<>();
@@ -74,7 +75,7 @@ public class MonitoringFolder implements Runnable {
                             dtmClient.addRow(vec);
                             new ClientSend(socket, "Created", username, pathCurrent, descriptionAction);
                         }
-                    } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) {
+                    } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) { //Modify file hoặc folder
                         if (jButtonConnect.getText().equals("Đóng kết nối") && (socket.isClosed() == false))
                         {
                             Vector<String> vec = new Vector<>();
@@ -91,7 +92,7 @@ public class MonitoringFolder implements Runnable {
                             dtmClient.addRow(vec);
                             new ClientSend(socket, "Modified", username, pathCurrent, descriptionAction);
                         }
-                    } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {
+                    } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {   //Delete file hoặc folder
                         if (jButtonConnect.getText().equals("Đóng kết nối")&& (socket.isClosed() == false))
                         {
                             Vector<String> vec = new Vector<>();

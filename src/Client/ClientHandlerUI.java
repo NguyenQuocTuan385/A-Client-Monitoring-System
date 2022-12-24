@@ -8,20 +8,16 @@ import java.awt.event.ActionListener;
 import java.io.*;
 import java.net.Socket;
 
-public class ClientHandler extends JFrame implements ActionListener {
+public class ClientHandlerUI extends JFrame implements ActionListener {
     private Socket socket;
     private int port;
-    private String clientUsername;
-    private String dirCurrent;
-    private JTextField portServer;
-    private JTextField username;
+    private String clientUsername, dirCurrent;
+    private JTextField portServer, username, jTextPath, jTextStatus;
     private DefaultTableModel dtmClient;
     private JTable jTableClient;
     private  JButton jButtonConnect;
-    private JTextField jTextPath;
-    private JTextField jTextStatus;
 
-    public ClientHandler() {
+    public ClientHandlerUI() {
         JFrame.setDefaultLookAndFeelDecorated(true);
         this.setTitle("Client Connect");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -153,27 +149,28 @@ public class ClientHandler extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String strAction = e.getActionCommand();
-        if (strAction.equals("Kết nối")) {
-            if (portServer.getText().equals("") || username.getText().equals("")) {
+        if (strAction.equals("Kết nối")) { //Nếu client chọn  button kết nối tới server
+            if (portServer.getText().equals("") || username.getText().equals("")) { //Nếu thông tin cần thiết bị rỗng
                 JOptionPane.showMessageDialog(null, "Bạn chưa nhập port hoặc username!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 try {
                     port = Integer.parseInt(portServer.getText());
                     this.clientUsername = username.getText();
                     this.socket = new Socket("127.0.0.1", port);
-                    dirCurrent = "E:\\";
+                    dirCurrent = "C:\\";
                     jTextPath.setText(dirCurrent);
-                    new ClientSend(socket, "Connect",clientUsername, dirCurrent);
+                    new ClientSend(socket, "Connect",clientUsername, dirCurrent); //Gửi yêu cầu kết nối tới server
                     jTextStatus.setText("Being monitored");
+                    //Tạo thread client nhận gói tin
                     new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath, dtmClient, jTextStatus)).start();
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                 }
             }
         }
-        else if (strAction.equals("Đóng kết nối")) {
+        else if (strAction.equals("Đóng kết nối")) { //Kiểm tra nếu client click button đóng kết nối
             try {
-                new ClientSend(socket, "Disconnect",clientUsername, dirCurrent);
+                new ClientSend(socket, "Disconnect",clientUsername, dirCurrent); //Gửi yêu cầu đóng kết nối tới server
                 dtmClient.setRowCount(0);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Đóng kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
@@ -181,7 +178,4 @@ public class ClientHandler extends JFrame implements ActionListener {
         }
     }
 
-    public static void main(String[] args) {
-        new ClientHandler();
-    }
 }

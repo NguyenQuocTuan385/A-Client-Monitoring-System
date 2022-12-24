@@ -1,8 +1,5 @@
 package Server;
 
-import Client.ClientHandler;
-import Client.ClientSend;
-
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -12,10 +9,9 @@ import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
-import java.util.Set;
 import java.util.TreeMap;
 
-public class Server extends JFrame implements Runnable, ActionListener {
+public class ServerHandlerUI extends JFrame implements Runnable, ActionListener {
     private int port;
     private ServerSocket serverSocket = null;
     private ArrayList<Socket> listClient;
@@ -31,7 +27,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
     private JFileChooser chooser;
     private boolean isStart;
 
-    public Server() {
+    public ServerHandlerUI() {
         JFrame.setDefaultLookAndFeelDecorated(true);
         this.setTitle("Server");
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -257,7 +253,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
                 e.printStackTrace();
             }
         }
-        if (serverSocket != null ){
+        if (serverSocket != null ){ //Đóng kết nối server
             try {
                 serverSocket.close();
                 serverSocket = null;
@@ -272,8 +268,8 @@ public class Server extends JFrame implements Runnable, ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         String strAction = e.getActionCommand();
-        if (strAction.equals("Start")) {
-            if (portServer.getText().equals("")) {
+        if (strAction.equals("Start")) { //Nếu người dùng click button start server
+            if (portServer.getText().equals("")) { //Kiểm tra chuỗi có bằng rỗng
                 JOptionPane.showMessageDialog(null, "Bạn chưa nhập port!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
             else {
@@ -283,7 +279,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
                 new Thread(this).start();
             }
         }
-        else if (strAction.equals("Chọn thư mục")) {
+        else if (strAction.equals("Chọn thư mục")) { //Nếu người dùng click button thay đổi thư mục giám sát client
             if (!jTableListClient.getSelectionModel().isSelectionEmpty()) {
 
                 DefaultTableModel model = (DefaultTableModel) jTableListClient.getModel();
@@ -298,7 +294,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
                 chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 chooser.setAcceptAllFileFilterUsed(false);
                 //
-                if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { //Server chốt được path giám sát
                     String pathChange = String.valueOf(chooser.getSelectedFile());
                     dtmListClient.setValueAt(pathChange, selectedRowIndex, 2);
                     Socket socket = mapClient.get(username);
@@ -316,7 +312,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
                         , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         }
-        else if (strAction.equals("Start monitor")) {
+        else if (strAction.equals("Start monitor")) {  //Nếu người dùng click button bắt đầu giám sát client
             if (!jTableListClient.getSelectionModel().isSelectionEmpty()) {
 
                 DefaultTableModel model = (DefaultTableModel) jTableListClient.getModel();
@@ -344,7 +340,7 @@ public class Server extends JFrame implements Runnable, ActionListener {
                         , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         }
-        else if (strAction.equals("Stop monitor")) {
+        else if (strAction.equals("Stop monitor")) {  //Nếu người dùng click button dừng giám sát client
             if (!jTableListClient.getSelectionModel().isSelectionEmpty()) {
 
                 DefaultTableModel model = (DefaultTableModel) jTableListClient.getModel();
@@ -409,9 +405,5 @@ public class Server extends JFrame implements Runnable, ActionListener {
                 throw new RuntimeException(ex);
             }
         }
-    }
-
-    public static void main(String[] args) {
-        new Server();
     }
 }

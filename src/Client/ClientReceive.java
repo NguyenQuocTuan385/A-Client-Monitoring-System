@@ -39,22 +39,23 @@ public class ClientReceive implements Runnable{
                     String nameClient = lineTemp[0];
                     String infoMessage = lineTemp[1];
 
-                    if (infoMessage.equals("Connect success")) {
+                    if (infoMessage.equals("Connect success")) { //Nếu server gửi gói tin kết nối thành công
                         JOptionPane.showMessageDialog(null, "Kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                         jButtonConnect.setText("Đóng kết nối");
                         System.out.println("Kết nối server thành công");
                         new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
                     }
-                    else if(infoMessage.equals("Disconnect success")) {
+                    else if(infoMessage.equals("Disconnect success")) {  //Nếu server gửi gói tin đóng kết nối thành công
                         if (nameClient.equals("Server stop")) {
                             JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                         }
-                        else if (nameClient.equals("Server stop all"))
+                        else if (nameClient.equals("Server stop all"))  //Nếu server đóng kết nối với tất cả client
                         {
                             JOptionPane.showMessageDialog(null, "Server đã đóng kết nối!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                             new ClientSend(socket, "Disconnect",clientUsername, "Server stop all");
                             System.out.println("Đóng kết nối thành công");
                         }
+                        //Nếu server đóng kết nối với tất cả client khi click button exit
                         else if (nameClient.equals("Server stop all exit window") || nameClient.equals("Server disconnect")) {
                             JOptionPane.showMessageDialog(null, "Server đã đóng kết nối!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                             System.out.println("Đóng kết nối thành công");
@@ -72,7 +73,7 @@ public class ClientReceive implements Runnable{
                         dtmClient.setRowCount(0);
                         break;
                     }
-                    else if (infoMessage.equals("Connect fail")) {
+                    else if (infoMessage.equals("Connect fail")) { //Nếu server gửi gói tin kết nối thất bại
                         socket.close();
                         bufferedReader.close();
                         JOptionPane.showMessageDialog(null, "Đã có người sử dụng tên này!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
@@ -80,15 +81,15 @@ public class ClientReceive implements Runnable{
                         jTextPath.setText("");
                         break;
                     }
-                    else if (infoMessage.equals("Change Folder Monitoring")) {
+                    else if (infoMessage.equals("Change Folder Monitoring")) { //Nếu server gửi gói tin thay đổi thư mục giám sát
                         path = lineTemp[2];
                         jTextPath.setText(path);
                         new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
                     }
-                    else if (infoMessage.equals("Stop monitor")) {
+                    else if (infoMessage.equals("Stop monitor")) {  //Nếu server gửi gói tin dừng giám sát thư mục
                         jTextStatus.setText("Is not being monitored");
                     }
-                    else if (infoMessage.equals("Start monitor")) {
+                    else if (infoMessage.equals("Start monitor")) { //Nếu server gửi gói tin mở giám sát thư mục
                         jTextStatus.setText("Being monitored");
                         new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
                     }

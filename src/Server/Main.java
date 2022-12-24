@@ -1,9 +1,7 @@
-package Client;
+package Server;
 
 public class Main {
-
     public static void main(String[] args) {
-        new ClientHandlerUI();
+        new ServerHandlerUI();
     }
 }
-

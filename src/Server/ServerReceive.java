@@ -43,7 +43,7 @@ public class ServerReceive implements Runnable{
                     String infoMessage = lineTemp[1];
                     String path = lineTemp[2];
 
-                     if (infoMessage.equals("Connect")) {
+                     if (infoMessage.equals("Connect")) { //Nếu client gửi gói tin connect tới server
                         if (!listNameClient.contains(nameClient)) {
                             listNameClient.add(nameClient);
                             mapNameClient.put(nameClient, socket);
@@ -59,7 +59,7 @@ public class ServerReceive implements Runnable{
                             new ServerSend(socket, "Connect fail", "server");
                         }
                     }
-                     else if (infoMessage.equals("Disconnect")) {
+                     else if (infoMessage.equals("Disconnect")) { //Nếu client gửi gói tin disconnect tới server
                          if (listNameClient.contains(nameClient)) {
                              dtmListClient.removeRow(listNameClient.indexOf(nameClient));
                              listNameClient.remove(nameClient);
@@ -72,7 +72,7 @@ public class ServerReceive implements Runnable{
                              System.out.println("Username:" + nameClient + " was disconnected");
                          }
                      }
-                     else if (infoMessage.equals("Created")) {
+                     else if (infoMessage.equals("Created")) { //Nếu client gửi gói tin dữ liệu giám sát
                          String descriptionAction = lineTemp[3];
                          Vector<String>vec = new Vector<>();
                          vec.add(nameClient);
@@ -80,7 +80,7 @@ public class ServerReceive implements Runnable{
                          vec.add(descriptionAction);
                          dtmListActionClient.addRow(vec);
                      }
-                     else if (infoMessage.equals("Deleted")) {
+                     else if (infoMessage.equals("Deleted")) { //Nếu client gửi gói tin dữ liệu giám sát
                          String descriptionAction = lineTemp[3];
                          Vector<String>vec = new Vector<>();
                          vec.add(nameClient);
@@ -88,7 +88,7 @@ public class ServerReceive implements Runnable{
                          vec.add(descriptionAction);
                          dtmListActionClient.addRow(vec);
                      }
-                     else if (infoMessage.equals("Modified")) {
+                     else if (infoMessage.equals("Modified")) { //Nếu client gửi gói tin dữ liệu giám sát
                          String descriptionAction = lineTemp[3];
                          Vector<String>vec = new Vector<>();
                          vec.add(nameClient);
