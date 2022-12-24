@@ -33,6 +33,8 @@ public class ClientHandlerUI extends JFrame implements ActionListener {
         JPanel jPanelPort = new JPanel(new FlowLayout());
         JLabel jLabelPort = new JLabel("Port");
         jLabelPort.setFont(fontBody);
+        jLabelPort.setForeground(new Color(32, 82, 149));
+
         portServer = new JTextField(20);
         jPanelPort.add(jLabelPort);
         jPanelPort.add(portServer);
@@ -40,6 +42,8 @@ public class ClientHandlerUI extends JFrame implements ActionListener {
         JPanel jPanelUsername = new JPanel(new FlowLayout());
         JLabel jLabelUsername = new JLabel("Username");
         jLabelUsername.setFont(fontBody);
+        jLabelUsername.setForeground(new Color(32, 82, 149));
+
         username = new JTextField(20);
         jPanelUsername.add(jLabelUsername);
         jPanelUsername.add(username);
@@ -54,6 +58,8 @@ public class ClientHandlerUI extends JFrame implements ActionListener {
         JPanel jPanelPath = new JPanel(new FlowLayout());
         JLabel jLabelPath = new JLabel("Path");
         jLabelPath.setFont(fontBody);
+        jLabelPath.setForeground(new Color(32, 82, 149));
+
         jTextPath = new JTextField(20);
         jTextPath.setEditable(false);
         jPanelPath.add(jLabelPath);
@@ -62,6 +68,8 @@ public class ClientHandlerUI extends JFrame implements ActionListener {
         JPanel jPanelStatus = new JPanel(new FlowLayout());
         JLabel jLabelStatus = new JLabel("Status");
         jLabelStatus.setFont(fontBody);
+        jLabelStatus.setForeground(new Color(32, 82, 149));
+
         jTextStatus = new JTextField(20);
         jTextStatus.setEditable(false);
         jPanelStatus.add(jLabelStatus);
@@ -76,7 +84,7 @@ public class ClientHandlerUI extends JFrame implements ActionListener {
 
         JLabel jLabelServer = new JLabel("Client UI", JLabel.CENTER);
         jLabelServer.setFont(fontHeaderAndFooter);
-        jLabelServer.setForeground(new Color(1, 119, 216));
+        jLabelServer.setForeground(new Color(20, 66, 114));
         JPanel jPanelHeaderFinal = new JPanel(new BorderLayout());
         jPanelHeaderFinal.add(jLabelServer,BorderLayout.PAGE_START);
         jPanelHeaderFinal.add(jPanelHeader, BorderLayout.CENTER);

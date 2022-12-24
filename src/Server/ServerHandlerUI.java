@@ -43,6 +43,7 @@ public class ServerHandlerUI extends JFrame implements Runnable, ActionListener 
         JPanel jPanelPort = new JPanel(new FlowLayout());
         JLabel jLabelPort = new JLabel("Port");
         jLabelPort.setFont(fontBody);
+        jLabelPort.setForeground(new Color(32, 82, 149));
         portServer = new JTextField(20);
         jPanelPort.add(jLabelPort);
         jPanelPort.add(portServer);
@@ -56,7 +57,7 @@ public class ServerHandlerUI extends JFrame implements Runnable, ActionListener 
 
         JLabel jLabelServer = new JLabel("Server UI", JLabel.CENTER);
         jLabelServer.setFont(fontHeaderAndFooter);
-        jLabelServer.setForeground(new Color(1, 119, 216));
+        jLabelServer.setForeground(new Color(20, 66, 114));
 
         jPanelHeaderLeft.add(jPanelPort);
         jPanelHeaderLeft.add(jButtonStart);
@@ -117,6 +118,7 @@ public class ServerHandlerUI extends JFrame implements Runnable, ActionListener 
 
         JLabel jLabelClient = new JLabel("List Client");
         jLabelClient.setFont(fontBody);
+        jLabelClient.setForeground(new Color(32, 82, 149));
         jPanelHeaderRight.add(jLabelClient);
 
         jPanelHeaderRight.setBorder(BorderFactory.createEmptyBorder(20, 50, 0, 50));
@@ -296,14 +298,16 @@ public class ServerHandlerUI extends JFrame implements Runnable, ActionListener 
                 //
                 if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) { //Server chốt được path giám sát
                     String pathChange = String.valueOf(chooser.getSelectedFile());
-                    dtmListClient.setValueAt(pathChange, selectedRowIndex, 2);
-                    Socket socket = mapClient.get(username);
-                    mapPathClient.put(username, pathChange);
+                    if (!pathChange.equals(path)) {
+                        dtmListClient.setValueAt(pathChange, selectedRowIndex, 2);
+                        Socket socket = mapClient.get(username);
+                        mapPathClient.put(username, pathChange);
 
-                    try {
-                        new ServerSend(socket,"Change Folder Monitoring", "server", pathChange);
-                    } catch (IOException ex) {
-                        throw new RuntimeException(ex);
+                        try {
+                            new ServerSend(socket,"Change Folder Monitoring", "server", pathChange);
+                        } catch (IOException ex) {
+                            throw new RuntimeException(ex);
+                        }
                     }
                 }
             }
