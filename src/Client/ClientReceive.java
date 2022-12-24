@@ -55,7 +55,7 @@ public class ClientReceive implements Runnable{
                             new ClientSend(socket, "Disconnect",clientUsername, "Server stop all");
                             System.out.println("Đóng kết nối thành công");
                         }
-                        else if (nameClient.equals("Server stop all exit window")) {
+                        else if (nameClient.equals("Server stop all exit window") || nameClient.equals("Server disconnect")) {
                             JOptionPane.showMessageDialog(null, "Server đã đóng kết nối!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                             System.out.println("Đóng kết nối thành công");
                         }
@@ -76,6 +76,8 @@ public class ClientReceive implements Runnable{
                         socket.close();
                         bufferedReader.close();
                         JOptionPane.showMessageDialog(null, "Đã có người sử dụng tên này!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
+                        jTextStatus.setText("");
+                        jTextPath.setText("");
                         break;
                     }
                     else if (infoMessage.equals("Change Folder Monitoring")) {

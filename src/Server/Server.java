@@ -181,10 +181,16 @@ public class Server extends JFrame implements Runnable, ActionListener {
         jButtonStopMonitor.setBackground(new Color(1, 119, 216));
         jButtonStopMonitor.setForeground(Color.white);
 
+        JButton jButtonDisconnect = new JButton("Disconnect");
+        jButtonDisconnect.addActionListener(this);
+        jButtonDisconnect.setBackground(new Color(1, 119, 216));
+        jButtonDisconnect.setForeground(Color.white);
+
         JPanel jPanelBody1Bot = new JPanel(new FlowLayout(FlowLayout.CENTER, 10,10));
         jPanelBody1Bot.add(jButtonSelectFolder);
         jPanelBody1Bot.add(jButtonStartMonitor);
         jPanelBody1Bot.add(jButtonStopMonitor);
+        jPanelBody1Bot.add(jButtonDisconnect);
 
         JPanel jPanelBody1= new JPanel(new BorderLayout());
         jPanelBody1.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
@@ -363,6 +369,33 @@ public class Server extends JFrame implements Runnable, ActionListener {
             }
             else {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn client để dừng giám sát"
+                        , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            }
+        }
+        else if (strAction.equals("Disconnect")) {
+            if (!jTableListClient.getSelectionModel().isSelectionEmpty()) {
+                DefaultTableModel model = (DefaultTableModel) jTableListClient.getModel();
+
+                int selectedRowIndex = jTableListClient.getSelectedRow();
+                String username = model.getValueAt(selectedRowIndex, 0).toString();
+
+                Socket socket = mapClient.get(username);
+                try {
+                    new ServerSend(socket, "Disconnect success", "Server disconnect");
+                    dtmListClient.removeRow(listNameClient.indexOf(username));
+                    listNameClient.remove(username);
+                    mapClient.remove(username);
+                    mapPathClient.remove(username);
+                    listClient.remove(socket);
+                    System.out.println("Username:" + username + " was disconnected");
+                    JOptionPane.showMessageDialog(this, "Ngắt kết nối với client thành công"
+                            , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+            else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn client để ngắt kết nối"
                         , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
         }
