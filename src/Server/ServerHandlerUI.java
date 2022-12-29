@@ -224,6 +224,10 @@ public class ServerHandlerUI extends JFrame implements Runnable, ActionListener 
         });
     }
 
+    public static boolean isNumeric(String str) {
+        return str.matches("-?\\d+(\\.\\d+)?");  //match a number with optional '-' and decimal.
+    }
+
     @Override
     public void run() {
         listClient =  new ArrayList<>();
@@ -275,10 +279,15 @@ public class ServerHandlerUI extends JFrame implements Runnable, ActionListener 
                 JOptionPane.showMessageDialog(null, "Bạn chưa nhập port!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
             }
             else {
-                this.port = Integer.parseInt(portServer.getText());
-                isStart = true;
-                jButtonStart.setText("Stop");
-                new Thread(this).start();
+                if (isNumeric(portServer.getText())) {
+                    this.port = Integer.parseInt(portServer.getText());
+                    isStart = true;
+                    jButtonStart.setText("Stop");
+                    new Thread(this).start();
+                }
+                else {
+                    JOptionPane.showMessageDialog(null, "Vui lòng nhập port chỉ chứa các con số!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                }
             }
         }
         else if (strAction.equals("Chọn thư mục")) { //Nếu người dùng click button thay đổi thư mục giám sát client
@@ -334,6 +343,7 @@ public class ServerHandlerUI extends JFrame implements Runnable, ActionListener 
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
+                    JOptionPane.showMessageDialog(null, "Bắt đầu giám sát client này thành công!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(this, "Client trước đó đã đang được giám sát!!!"
                             , "Thông báo", JOptionPane.INFORMATION_MESSAGE);
@@ -362,6 +372,7 @@ public class ServerHandlerUI extends JFrame implements Runnable, ActionListener 
                     } catch (IOException ex) {
                         throw new RuntimeException(ex);
                     }
+                    JOptionPane.showMessageDialog(null, "Dừng giám sát client này thành công!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                 } else {
                     JOptionPane.showMessageDialog(this, "Client trước đó đã đang dừng giám sát!!!"
                             , "Thông báo", JOptionPane.INFORMATION_MESSAGE);

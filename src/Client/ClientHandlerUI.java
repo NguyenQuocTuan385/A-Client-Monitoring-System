@@ -1,5 +1,7 @@
 package Client;
 
+import Server.ServerHandlerUI;
+
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.awt.*;
@@ -162,15 +164,20 @@ public class ClientHandlerUI extends JFrame implements ActionListener {
                 JOptionPane.showMessageDialog(null, "Bạn chưa nhập port hoặc username!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
             } else {
                 try {
-                    port = Integer.parseInt(portServer.getText());
-                    this.clientUsername = username.getText();
-                    this.socket = new Socket("127.0.0.1", port);
-                    dirCurrent = "C:\\";
-                    jTextPath.setText(dirCurrent);
-                    new ClientSend(socket, "Connect",clientUsername, dirCurrent); //Gửi yêu cầu kết nối tới server
-                    jTextStatus.setText("Being monitored");
-                    //Tạo thread client nhận gói tin
-                    new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath, dtmClient, jTextStatus)).start();
+                    if(ServerHandlerUI.isNumeric(portServer.getText())) {
+                        port = Integer.parseInt(portServer.getText());
+                        this.clientUsername = username.getText();
+                        this.socket = new Socket("127.0.0.1", port);
+                        dirCurrent = "C:\\";
+                        jTextPath.setText(dirCurrent);
+                        new ClientSend(socket, "Connect",clientUsername, dirCurrent); //Gửi yêu cầu kết nối tới server
+                        jTextStatus.setText("Being monitored");
+                        //Tạo thread client nhận gói tin
+                        new Thread(new ClientReceive(socket,jButtonConnect, dirCurrent, clientUsername,jTextPath, dtmClient, jTextStatus)).start();
+                    }
+                    else {
+                        JOptionPane.showMessageDialog(null, "Vui lòng nhập port chỉ chứa các con số!!!","Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    }
                 } catch (IOException ioe) {
                     JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                 }

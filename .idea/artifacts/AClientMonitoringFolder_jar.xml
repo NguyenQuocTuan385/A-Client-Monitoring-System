@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="AClientMonitoringFolder:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/AClientMonitoringFolder_jar</output-path>
+    <root id="archive" name="AClientMonitoringFolder.jar">
+      <element id="module-output" name="AClientMonitoringFolder" />
+    </root>
+  </artifact>
+</component>
