@@ -123,10 +123,6 @@ public class MonitoringFolder implements Runnable {
                 if (!valid) {
                     break;
                 }
-                if (!jButtonConnect.getText().equals("Đóng kết nối"))
-                {
-                    break;
-                }
             }
         }catch (IOException e) {
             e.printStackTrace();
