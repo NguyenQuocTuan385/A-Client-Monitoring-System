@@ -77,6 +77,9 @@ public class ClientReceive implements Runnable{
                             JOptionPane.showMessageDialog(null, "Đóng kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                             System.out.println("Đóng kết nối thành công");
                         }
+                        if (threadMonitor.isAlive()) {
+                            threadMonitor.interrupt();
+                        }
                         socket.close();
                         bufferedReader.close();
                         break;

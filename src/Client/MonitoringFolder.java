@@ -58,73 +58,64 @@ public class MonitoringFolder implements Runnable {
                     Path fileName = ev.context();
                     String descriptionAction = "";
                     if (kind == StandardWatchEventKinds.ENTRY_CREATE) { //Tạo mới file hoặc folder
-                        if (jButtonConnect.getText().equals("Đóng kết nối") && (socket.isClosed() == false))
-                        {
-                            Vector<String> vec = new Vector<>();
-                            vec.add(username);
-                            vec.add("Created");
-                            File filePath =  dir.resolve(fileName).toFile();
-                            if (filePath.isDirectory()) {
-                                descriptionAction = "A new folder was created in path " + dir.resolve(fileName);
-                                vec.add(descriptionAction);
+                        Vector<String> vec = new Vector<>();
+                        vec.add(username);
+                        vec.add("Created");
+                        File filePath =  dir.resolve(fileName).toFile();
+                        if (filePath.isDirectory()) {
+                            descriptionAction = "A new folder was created in path " + dir.resolve(fileName);
+                            vec.add(descriptionAction);
 
-                            } else if(filePath.isFile()) {
-                                descriptionAction = "A new file was created in path " + dir.resolve(fileName);
-                                vec.add(descriptionAction);
-                            }
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dtmClient.addRow(vec);
-                                }
-                            });
-                            new ClientSend(socket, "Created", username, pathCurrent, descriptionAction);
+                        } else if(filePath.isFile()) {
+                            descriptionAction = "A new file was created in path " + dir.resolve(fileName);
+                            vec.add(descriptionAction);
                         }
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                dtmClient.addRow(vec);
+                            }
+                        });
+                        new ClientSend(socket, "Created", username, pathCurrent, descriptionAction);
                     } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) { //Modify file hoặc folder
-                        if (jButtonConnect.getText().equals("Đóng kết nối") && (socket.isClosed() == false))
-                        {
-                            Vector<String> vec = new Vector<>();
-                            vec.add(username);
-                            vec.add("Modified");
-                            File filePath =  dir.resolve(fileName).toFile();
-                            if (filePath.isDirectory()) {
-                                descriptionAction = "A folder was modified in path " + dir.resolve(fileName);
-                                vec.add(descriptionAction);
-                            } else if(filePath.isFile()) {
-                                descriptionAction = "A file was modified in path " + dir.resolve(fileName);
-                                vec.add(descriptionAction);
-                            }
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dtmClient.addRow(vec);
-                                }
-                            });
-
-                            new ClientSend(socket, "Modified", username, pathCurrent, descriptionAction);
+                        Vector<String> vec = new Vector<>();
+                        vec.add(username);
+                        vec.add("Modified");
+                        File filePath =  dir.resolve(fileName).toFile();
+                        if (filePath.isDirectory()) {
+                            descriptionAction = "A folder was modified in path " + dir.resolve(fileName);
+                            vec.add(descriptionAction);
+                        } else if(filePath.isFile()) {
+                            descriptionAction = "A file was modified in path " + dir.resolve(fileName);
+                            vec.add(descriptionAction);
                         }
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                dtmClient.addRow(vec);
+                            }
+                        });
+
+                        new ClientSend(socket, "Modified", username, pathCurrent, descriptionAction);
                     } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {   //Delete file hoặc folder
-                        if (jButtonConnect.getText().equals("Đóng kết nối")&& (socket.isClosed() == false))
-                        {
-                            Vector<String> vec = new Vector<>();
-                            vec.add(username);
-                            vec.add("Deleted");
-                            if (fileName.toString().indexOf('.') == -1) {
-                                descriptionAction = "A folder was deleted in path " + dir.resolve(fileName);
-                                vec.add(descriptionAction);
-                            } else {
-                                descriptionAction = "A file was deleted in path " + dir.resolve(fileName);
-                                vec.add(descriptionAction);
-                            }
-                            SwingUtilities.invokeAndWait(new Runnable() {
-                                @Override
-                                public void run() {
-                                    dtmClient.addRow(vec);
-                                }
-                            });
-
-                            new ClientSend(socket, "Deleted", username, pathCurrent, descriptionAction);
+                        Vector<String> vec = new Vector<>();
+                        vec.add(username);
+                        vec.add("Deleted");
+                        if (fileName.toString().indexOf('.') == -1) {
+                            descriptionAction = "A folder was deleted in path " + dir.resolve(fileName);
+                            vec.add(descriptionAction);
+                        } else {
+                            descriptionAction = "A file was deleted in path " + dir.resolve(fileName);
+                            vec.add(descriptionAction);
                         }
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                dtmClient.addRow(vec);
+                            }
+                        });
+
+                        new ClientSend(socket, "Deleted", username, pathCurrent, descriptionAction);
                     }
                 }
 
