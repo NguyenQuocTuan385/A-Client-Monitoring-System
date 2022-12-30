@@ -43,12 +43,11 @@ public class MonitoringFolder implements Runnable {
                     key = null;
                     key = watcher.take();
 
-                    //Nếu đang trogn trạng thái không được giám sát hoặc path cũ != path mới
-                    if (!jTextStatus.getText().equals("Being monitored") || (!pathCurrent.equals(jTextPath.getText()))) {
+                    if (Thread.currentThread().isInterrupted())
+                    {
                         break;
                     }
                 } catch (InterruptedException ex) {
-                    System.out.println("InterruptedException: " + ex.getMessage());
                     return;
                 }
 

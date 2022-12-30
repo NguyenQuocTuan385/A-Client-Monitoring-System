@@ -17,6 +17,7 @@ public class ClientReceive implements Runnable{
     private  JTextField jTextPath;
     private DefaultTableModel dtmClient;
     private  JTextField jTextStatus;
+    private Thread threadMonitor;
     public ClientReceive(Socket socket, JButton jButtonConnect, String path, String clientUsername, JTextField jTextPath
                         ,DefaultTableModel dtmClient, JTextField jTextStatus)
     {
@@ -44,7 +45,8 @@ public class ClientReceive implements Runnable{
                         JOptionPane.showMessageDialog(null, "Kết nối thành công","Thông báo", JOptionPane.INFORMATION_MESSAGE);
                         jButtonConnect.setText("Đóng kết nối");
                         System.out.println("Kết nối server thành công");
-                        new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
+                        threadMonitor =  new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus));
+                        threadMonitor.start();
                     }
                     else if(infoMessage.equals("Disconnect success")) {  //Nếu server gửi gói tin đóng kết nối thành công
                         SwingUtilities.invokeAndWait(new Runnable() {
@@ -101,8 +103,11 @@ public class ClientReceive implements Runnable{
                                 jTextPath.setText(path);
                             }
                         });
-
-                        new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
+                        if (threadMonitor.isAlive()) {
+                            threadMonitor.interrupt();
+                        }
+                        threadMonitor = new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus));
+                        threadMonitor.start();
                     }
                     else if (infoMessage.equals("Stop monitor")) {  //Nếu server gửi gói tin dừng giám sát thư mục
                         SwingUtilities.invokeAndWait(new Runnable() {
@@ -120,8 +125,11 @@ public class ClientReceive implements Runnable{
                                 jTextStatus.setText("Being monitored");
                             }
                         });
-
-                        new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
+                        if (threadMonitor.isAlive()) {
+                            threadMonitor.interrupt();
+                        }
+                        threadMonitor = new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus));
+                        threadMonitor.start();
                     }
                 }
             }
