@@ -47,6 +47,16 @@ public class ClientReceive implements Runnable{
                         new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
                     }
                     else if(infoMessage.equals("Disconnect success")) {  //Nếu server gửi gói tin đóng kết nối thành công
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                jButtonConnect.setText("Kết nối");
+                                path = "";
+                                jTextPath.setText("");
+                                jTextStatus.setText("");
+                                dtmClient.setRowCount(0);
+                            }
+                        });
                         if (nameClient.equals("Server stop")) {
                             JOptionPane.showMessageDialog(null, "Kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                         }
@@ -67,23 +77,11 @@ public class ClientReceive implements Runnable{
                         }
                         socket.close();
                         bufferedReader.close();
-                        SwingUtilities.invokeAndWait(new Runnable() {
-                            @Override
-                            public void run() {
-                                jButtonConnect.setText("Kết nối");
-                                path = "";
-                                jTextPath.setText("");
-                                jTextStatus.setText("");
-                                dtmClient.setRowCount(0);
-                            }
-                        });
-
                         break;
                     }
                     else if (infoMessage.equals("Connect fail")) { //Nếu server gửi gói tin kết nối thất bại
                         socket.close();
                         bufferedReader.close();
-                        JOptionPane.showMessageDialog(null, "Đã có người sử dụng tên này!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
                         SwingUtilities.invokeAndWait(new Runnable() {
                             @Override
                             public void run() {
@@ -91,6 +89,7 @@ public class ClientReceive implements Runnable{
                                 jTextPath.setText("");
                             }
                         });
+                        JOptionPane.showMessageDialog(null, "Đã có người sử dụng tên này!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
 
                         break;
                     }
