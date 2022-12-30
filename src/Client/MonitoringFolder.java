@@ -4,6 +4,7 @@ import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.nio.file.*;
 import java.util.Vector;
@@ -72,7 +73,12 @@ public class MonitoringFolder implements Runnable {
                                 descriptionAction = "A new file was created in path " + dir.resolve(fileName);
                                 vec.add(descriptionAction);
                             }
-                            dtmClient.addRow(vec);
+                            SwingUtilities.invokeAndWait(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dtmClient.addRow(vec);
+                                }
+                            });
                             new ClientSend(socket, "Created", username, pathCurrent, descriptionAction);
                         }
                     } else if (kind == StandardWatchEventKinds.ENTRY_MODIFY) { //Modify file hoặc folder
@@ -89,7 +95,13 @@ public class MonitoringFolder implements Runnable {
                                 descriptionAction = "A file was modified in path " + dir.resolve(fileName);
                                 vec.add(descriptionAction);
                             }
-                            dtmClient.addRow(vec);
+                            SwingUtilities.invokeAndWait(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dtmClient.addRow(vec);
+                                }
+                            });
+
                             new ClientSend(socket, "Modified", username, pathCurrent, descriptionAction);
                         }
                     } else if (kind == StandardWatchEventKinds.ENTRY_DELETE) {   //Delete file hoặc folder
@@ -105,7 +117,13 @@ public class MonitoringFolder implements Runnable {
                                 descriptionAction = "A file was deleted in path " + dir.resolve(fileName);
                                 vec.add(descriptionAction);
                             }
-                            dtmClient.addRow(vec);
+                            SwingUtilities.invokeAndWait(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dtmClient.addRow(vec);
+                                }
+                            });
+
                             new ClientSend(socket, "Deleted", username, pathCurrent, descriptionAction);
                         }
                     }
@@ -122,6 +140,10 @@ public class MonitoringFolder implements Runnable {
             }
         }catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
         }
     }
 }

@@ -3,6 +3,7 @@ package Server;
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.TreeMap;
@@ -52,7 +53,12 @@ public class ServerReceive implements Runnable{
                             vec.add(nameClient);
                             vec.add("Start");
                             vec.add(path);
-                            dtmListClient.addRow(vec);
+                            SwingUtilities.invokeAndWait(new Runnable() {
+                                @Override
+                                public void run() {
+                                    dtmListClient.addRow(vec);
+                                }
+                            });
                             new ServerSend(socket, "Connect success", "server");
                         } else {
                             listClient.remove(socket);
@@ -61,7 +67,12 @@ public class ServerReceive implements Runnable{
                     }
                      else if (infoMessage.equals("Disconnect")) { //Nếu client gửi gói tin disconnect tới server
                          if (listNameClient.contains(nameClient)) {
-                             dtmListClient.removeRow(listNameClient.indexOf(nameClient));
+                             SwingUtilities.invokeAndWait(new Runnable() {
+                                 @Override
+                                 public void run() {
+                                     dtmListClient.removeRow(listNameClient.indexOf(nameClient));
+                                 }
+                             });
                              listNameClient.remove(nameClient);
                              mapNameClient.remove(nameClient);
                              mapPathClient.remove(nameClient);
@@ -78,7 +89,12 @@ public class ServerReceive implements Runnable{
                          vec.add(nameClient);
                          vec.add("Created");
                          vec.add(descriptionAction);
-                         dtmListActionClient.addRow(vec);
+                         SwingUtilities.invokeAndWait(new Runnable() {
+                             @Override
+                             public void run() {
+                                 dtmListActionClient.addRow(vec);
+                             }
+                         });
                      }
                      else if (infoMessage.equals("Deleted")) { //Nếu client gửi gói tin dữ liệu giám sát
                          String descriptionAction = lineTemp[3];
@@ -86,7 +102,12 @@ public class ServerReceive implements Runnable{
                          vec.add(nameClient);
                          vec.add("Deleted");
                          vec.add(descriptionAction);
-                         dtmListActionClient.addRow(vec);
+                         SwingUtilities.invokeAndWait(new Runnable() {
+                             @Override
+                             public void run() {
+                                 dtmListActionClient.addRow(vec);
+                             }
+                         });
                      }
                      else if (infoMessage.equals("Modified")) { //Nếu client gửi gói tin dữ liệu giám sát
                          String descriptionAction = lineTemp[3];
@@ -94,13 +115,22 @@ public class ServerReceive implements Runnable{
                          vec.add(nameClient);
                          vec.add("Modified");
                          vec.add(descriptionAction);
-                         dtmListActionClient.addRow(vec);
+                         SwingUtilities.invokeAndWait(new Runnable() {
+                             @Override
+                             public void run() {
+                                 dtmListActionClient.addRow(vec);
+                             }
+                         });
                      }
 
                 }
             }
         }catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
         }
     }
 }

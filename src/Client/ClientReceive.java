@@ -5,6 +5,7 @@ import javax.swing.table.DefaultTableModel;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Socket;
 
 public class ClientReceive implements Runnable{
@@ -66,36 +67,66 @@ public class ClientReceive implements Runnable{
                         }
                         socket.close();
                         bufferedReader.close();
-                        jButtonConnect.setText("Kết nối");
-                        path = "";
-                        jTextPath.setText("");
-                        jTextStatus.setText("");
-                        dtmClient.setRowCount(0);
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                jButtonConnect.setText("Kết nối");
+                                path = "";
+                                jTextPath.setText("");
+                                jTextStatus.setText("");
+                                dtmClient.setRowCount(0);
+                            }
+                        });
+
                         break;
                     }
                     else if (infoMessage.equals("Connect fail")) { //Nếu server gửi gói tin kết nối thất bại
                         socket.close();
                         bufferedReader.close();
                         JOptionPane.showMessageDialog(null, "Đã có người sử dụng tên này!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
-                        jTextStatus.setText("");
-                        jTextPath.setText("");
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                jTextStatus.setText("");
+                                jTextPath.setText("");
+                            }
+                        });
+
                         break;
                     }
                     else if (infoMessage.equals("Change Folder Monitoring")) { //Nếu server gửi gói tin thay đổi thư mục giám sát
                         path = lineTemp[2];
-                        jTextPath.setText(path);
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                jTextPath.setText(path);
+                            }
+                        });
+
                         new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
                     }
                     else if (infoMessage.equals("Stop monitor")) {  //Nếu server gửi gói tin dừng giám sát thư mục
-                        jTextStatus.setText("Is not being monitored");
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                jTextStatus.setText("Is not being monitored");
+                            }
+                        });
+
                     }
                     else if (infoMessage.equals("Start monitor")) { //Nếu server gửi gói tin mở giám sát thư mục
-                        jTextStatus.setText("Being monitored");
+                        SwingUtilities.invokeAndWait(new Runnable() {
+                            @Override
+                            public void run() {
+                                jTextStatus.setText("Being monitored");
+                            }
+                        });
+
                         new Thread(new MonitoringFolder(socket,dtmClient, clientUsername, path, jTextPath, jButtonConnect, jTextStatus)).start();
                     }
                 }
             }
-        } catch (IOException e) {
+        } catch (IOException | InterruptedException | InvocationTargetException e) {
             e.printStackTrace();
         }
     }
