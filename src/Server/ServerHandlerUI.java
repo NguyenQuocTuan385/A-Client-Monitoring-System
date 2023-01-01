@@ -105,8 +105,18 @@ public class ServerHandlerUI extends JFrame implements Runnable, ActionListener 
         JScrollPane sc = new JScrollPane(jTableListActionClient, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JPanel jPanelBody = new JPanel(new BorderLayout());
         jPanelBody.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
-        jPanelBody.add(sc);
+        jPanelBody.add(sc, BorderLayout.CENTER);
         jPanelBody.setPreferredSize(new Dimension(800,500));
+
+        JButton jButtonClearHis = new JButton("Clear history");
+        jButtonClearHis.addActionListener(this);
+        jButtonClearHis.setBackground(new Color(1, 119, 216));
+        jButtonClearHis.setForeground(Color.white);
+
+        JPanel jPanelBody2Bot = new JPanel(new FlowLayout(FlowLayout.CENTER, 10,10));
+        jPanelBody2Bot.add(jButtonClearHis);
+
+        jPanelBody.add(jPanelBody2Bot, BorderLayout.PAGE_END);
 
         JPanel jPanelBodyLeft = new JPanel(new BorderLayout());
         jPanelBodyLeft.add(jPanelHeaderLeft, BorderLayout.PAGE_START);
@@ -419,6 +429,9 @@ public class ServerHandlerUI extends JFrame implements Runnable, ActionListener 
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+        }
+        else if (strAction.equals("Clear history")) {
+            dtmListActionClient.setRowCount(0);
         }
     }
 }

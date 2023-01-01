@@ -133,8 +133,18 @@ public class ClientHandlerUI extends JFrame implements ActionListener {
         JScrollPane sc = new JScrollPane(jTableClient, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS);
         JPanel jPanelBody = new JPanel(new BorderLayout());
         jPanelBody.setBorder(BorderFactory.createEmptyBorder(20, 50, 20, 50));
-        jPanelBody.add(sc);
+        jPanelBody.add(sc, BorderLayout.CENTER);
         jPanelBody.setPreferredSize(new Dimension(1000,500));
+
+        JButton jButtonClearHis = new JButton("Clear history");
+        jButtonClearHis.addActionListener(this);
+        jButtonClearHis.setBackground(new Color(1, 119, 216));
+        jButtonClearHis.setForeground(Color.white);
+
+        JPanel jPanelBody2Bot = new JPanel(new FlowLayout(FlowLayout.CENTER, 10,10));
+        jPanelBody2Bot.add(jButtonClearHis);
+
+        jPanelBody.add(jPanelBody2Bot, BorderLayout.PAGE_END);
 
         this.addWindowListener(new java.awt.event.WindowAdapter() {
             @Override
@@ -186,10 +196,12 @@ public class ClientHandlerUI extends JFrame implements ActionListener {
         else if (strAction.equals("Đóng kết nối")) { //Kiểm tra nếu client click button đóng kết nối
             try {
                 new ClientSend(socket, "Disconnect",clientUsername, dirCurrent); //Gửi yêu cầu đóng kết nối tới server
-                dtmClient.setRowCount(0);
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(null, "Đóng kết nối không thành công!!!","Thông báo", JOptionPane.ERROR_MESSAGE);
             }
+        }
+        else if (strAction.equals("Clear history")) {
+            dtmClient.setRowCount(0);
         }
     }
 

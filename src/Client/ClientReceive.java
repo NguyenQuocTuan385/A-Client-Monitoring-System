@@ -56,7 +56,6 @@ public class ClientReceive implements Runnable{
                                 path = "";
                                 jTextPath.setText("");
                                 jTextStatus.setText("");
-                                dtmClient.setRowCount(0);
                             }
                         });
                         if (nameClient.equals("Server stop")) {
