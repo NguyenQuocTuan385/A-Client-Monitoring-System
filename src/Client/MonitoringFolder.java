@@ -32,7 +32,7 @@ public class MonitoringFolder implements Runnable {
     @Override
     public void run()  {
         try {
-            while (jTextStatus.getText().equals("Being monitored")) {
+            while (!Thread.currentThread().isInterrupted()) {
                 WatchService watcher = FileSystems.getDefault().newWatchService();
                 WatchKey key;
                 pathCurrent = jTextPath.getText();

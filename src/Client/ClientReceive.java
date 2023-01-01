@@ -112,6 +112,9 @@ public class ClientReceive implements Runnable{
                         threadMonitor.start();
                     }
                     else if (infoMessage.equals("Stop monitor")) {  //Nếu server gửi gói tin dừng giám sát thư mục
+                        if (threadMonitor.isAlive()) {
+                            threadMonitor.interrupt();
+                        }
                         SwingUtilities.invokeAndWait(new Runnable() {
                             @Override
                             public void run() {
